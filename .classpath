@@ -2,6 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="ProdCons"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="D:/Kraken/ProjetSE/ProdCons.jar"/>
+	<classpathentry kind="lib" path="ProdCons.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
