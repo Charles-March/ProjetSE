@@ -7,16 +7,24 @@ import jus.poc.prodcons._Consommateur;
 
 public class Consommateur extends Acteur implements _Consommateur {
 
-	public Consommateur(int type, Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement)
+	private int id;
+	private int nbMessagesTraites;
+	
+	public Consommateur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement)
 			throws ControlException {
-		super(type, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
+		super(typeConsommateur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
 		// TODO Auto-generated constructor stub
+		id = identification();
+		nbMessagesTraites = 0;
 	}
+	
+	public long getId(){return id;}
 
 	@Override
+	//nombre de messages que le consommateur a deja traite
 	public int nombreDeMessages() {
 		// TODO Auto-generated method stub
-		return 0;
+		return nbMessagesTraites;
 	}
 
 }
