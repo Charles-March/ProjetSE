@@ -2,7 +2,11 @@ package jus.poc.prodcons.v1;
 
 import java.io.IOException;
 import java.util.InvalidPropertiesFormatException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
 
+import jus.poc.prodcons.Acteur;
 import jus.poc.prodcons.Observateur;
 import jus.poc.prodcons.Simulateur;
 
@@ -19,10 +23,17 @@ public class TestProdCons extends Simulateur {
 	protected static int deviationNombreMoyenDeProduction;
 	protected static int nombreMoyenNbExemplaire;
 	protected static int deviationNombreMoyenNbExemplaire;
+	
+	protected List<Producteur> producteurs = new LinkedList<Producteur>();
+	protected List<Consommateur> consommateurs = new LinkedList<Consommateur>();
+	protected Observateur obs;
+	protected ProdCons tampon;
+	protected Acteur[] tousMesActeurs;
 
 	public TestProdCons(Observateur observateur) {
 		super(observateur);
 		// TODO Auto-generated constructor stub
+		obs = observateur;
 	}
 
 	 protected static void init(String file){
@@ -57,7 +68,20 @@ public class TestProdCons extends Simulateur {
 	protected void run() throws Exception {
 		// TODO Auto-generated method stub
 		init("options.xml");
-		
+		tampon = new ProdCons(nbBuffer);
+		int i;
+		int nbTotalDeMessagesADeposer = 0;
+		int nbTotalDeMessagesTraites = 0;
+		Random rand = new Random();
+		for(i=0; i<nbProd; i++){
+			producteurs.add(new Producteur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon));
+			nbTotalDeMessagesADeposer += producteurs.get(i).nombreDeMessages();
+		}
+		for(i=0; i<nbCons; i++)consommateurs.add(new Consommateur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon));
+		tousMesActeurs = new Acteur[nbProd+nbCons];
+		for(i=0; i<nbProd; i++)tousMesActeurs[i] = producteurs.get(i);
+		for(i=0; i<nbCons; i++)tousMesActeurs[i+nbProd] = consommateurs.get(i);
+		i = rand.nextInt(nbProd+nbCons+1);
 	}
 
 	public static void main(String[] args) {

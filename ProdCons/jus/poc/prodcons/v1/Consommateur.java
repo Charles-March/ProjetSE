@@ -30,11 +30,6 @@ public class Consommateur extends Acteur implements _Consommateur {
 	
 	public long getId(){return id;}
 	
-	public void consomme(Message message){
-		nbMessagesTraites++;
-		msgs.add(message);
-	}
-	
 	@Override
 	public void run(){
 			try {
