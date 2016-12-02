@@ -1,5 +1,7 @@
 package jus.poc.prodcons.v1;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 import jus.poc.prodcons.Message;
 import jus.poc.prodcons.Tampon;
 import jus.poc.prodcons._Consommateur;
@@ -7,54 +9,58 @@ import jus.poc.prodcons._Producteur;
 
 public class ProdCons implements Tampon {
 
-	private int nbProd;
-	private int nbCons;
 	private int nbBuffer;
-	private int tempsMoyenProduction;
-	private int deviationTempsMoyenProduction;
-	private int tempsMoyenConsommation;
-	private int deviationTempsMoyenConsommation;
-	private int nombreMoyenDeProduction;
-	private int deviationNombreMoyenDeProduction;
-	private int nombreMoyenNbExemplaire;
-	private int deviationNombreMoyenNbExemplaire;
 	private int caseDepot;
 	private int caseConso;
+	private final ReentrantLock lockConso = new ReentrantLock();
+	private final ReentrantLock lockProd = new ReentrantLock();
+	private boolean bloque = false;
 	
 	public Message[] buffer;
 	
-	public ProdCons() {
+	public ProdCons(int taille) {
 		// TODO Auto-generated constructor stub		
-		buffer = new Message[nbBuffer];
+		nbBuffer = taille;
+		buffer = new Message[taille];
 		caseDepot = 0;
 		caseConso = 0;
 	}
-	
-	public void setTailleBuffer(int taille){nbBuffer = taille;}
 
 	@Override
 	public int enAttente() {
 		// TODO Auto-generated method stub
-		return ((caseDepot - caseConso)%nbBuffer);
+		int reste = (caseDepot - caseConso)%nbBuffer;
+		if(reste == 0 || buffer[caseDepot] != null) reste = nbBuffer;
+		return reste;
 	}
-
-	// /!\ /!\ VARIABLES PARTAGEES PENSER AU LOCK /!\ /!\
+	
 	@Override
 	public Message get(_Consommateur arg0) throws Exception, InterruptedException {
 		// TODO Auto-generated method stub
-		while(buffer[caseConso] == null)arg0.wait();
+		while(buffer[caseConso] == null) lockConso.wait();
 		Message sortie = buffer[caseConso];
 		buffer[caseConso] = null;
+		if(caseConso == caseDepot) bloque = true;
 		caseConso = (caseConso+1) % nbBuffer;
+		if(bloque){
+			bloque = false;
+			lockProd.notify();
+		}
 		return sortie;
 	}
 
 	@Override
 	public void put(_Producteur arg0, Message arg1) throws Exception, InterruptedException {
 		// TODO Auto-generated method stub
+		while(buffer[caseDepot] != null) lockProd.wait();
 		if(buffer[caseDepot] == null){
 			buffer[caseDepot] = arg1;
+			if(caseDepot == caseConso) bloque = true;
 			caseDepot = (caseDepot+1) % nbBuffer;
+		}
+		if(bloque){
+			bloque = false;
+			lockConso.notify();
 		}
 	}
 
