@@ -15,8 +15,16 @@ public class ProdCons implements Tampon {
 	private final ReentrantLock lockConso = new ReentrantLock();
 	private final ReentrantLock lockProd = new ReentrantLock();
 	private boolean bloque = false;
-	
+	private int nbConsomme;
 	public Message[] buffer;
+	
+	public synchronized void consomme(){
+		nbConsomme++;
+	}
+	
+	public int getCons(){
+		return nbConsomme;
+	}
 	
 	public ProdCons(int taille) {
 		// TODO Auto-generated constructor stub		
@@ -35,16 +43,20 @@ public class ProdCons implements Tampon {
 	}
 	
 	@Override
-	public Message get(_Consommateur arg0) throws Exception, InterruptedException {
+	public synchronized Message get(_Consommateur arg0) throws Exception, InterruptedException {
 		// TODO Auto-generated method stub
-		while(buffer[caseConso] == null) lockConso.wait();
+		synchronized (lockConso){
+			while(buffer[caseConso] == null) lockConso.wait();
+		}
 		Message sortie = buffer[caseConso];
 		buffer[caseConso] = null;
 		if(caseConso == caseDepot) bloque = true;
 		caseConso = (caseConso+1) % nbBuffer;
-		if(bloque){
-			bloque = false;
-			lockProd.notify();
+		synchronized (lockProd){
+			if(bloque){
+				bloque = false;
+				lockProd.notifyAll();
+			}
 		}
 		return sortie;
 	}
@@ -52,15 +64,20 @@ public class ProdCons implements Tampon {
 	@Override
 	public void put(_Producteur arg0, Message arg1) throws Exception, InterruptedException {
 		// TODO Auto-generated method stub
-		while(buffer[caseDepot] != null) lockProd.wait();
+		System.out.println("coucou");
+		synchronized (lockProd){
+			while(buffer[caseDepot] != null) lockProd.wait();
+		}
 		if(buffer[caseDepot] == null){
 			buffer[caseDepot] = arg1;
 			if(caseDepot == caseConso) bloque = true;
 			caseDepot = (caseDepot+1) % nbBuffer;
 		}
-		if(bloque){
-			bloque = false;
-			lockConso.notify();
+		synchronized (lockConso){
+			if(bloque){
+				bloque = false;
+				lockConso.notifyAll();
+			}
 		}
 	}
 

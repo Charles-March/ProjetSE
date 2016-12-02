@@ -44,9 +44,11 @@ public class Producteur extends Acteur implements _Producteur {
 	@Override
 	public void run(){
 		try {
-			tp.put(this,messages.get(ResteADeposer));
-			ResteADeposer--;
-			prodObservateur.productionMessage(this, messages.get(ResteADeposer),this.moyenneTempsDeTraitement);		
+			for(int i=0; i<nbMessagesADeposer; i++){
+				tp.put(this,messages.get(ResteADeposer-1));
+				ResteADeposer--;
+				//prodObservateur.productionMessage(this, messages.get(ResteADeposer),this.moyenneTempsDeTraitement);
+			}		
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -57,7 +59,7 @@ public class Producteur extends Acteur implements _Producteur {
 	//nombre de messages que le producteur doit produire 
 	public int nombreDeMessages() {
 		// TODO Auto-generated method stub
-		return messages.size();
+		return nbMessagesADeposer;
 	}
 
 }

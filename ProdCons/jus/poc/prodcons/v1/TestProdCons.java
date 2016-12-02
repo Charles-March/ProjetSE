@@ -80,18 +80,27 @@ public class TestProdCons extends Simulateur {
 		for(i=0; i<nbCons; i++)consommateurs.add(new Consommateur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon));
 		for(i=0; i<nbProd; i++)tousMesActeurs.add(producteurs.get(i));
 		for(i=0; i<nbCons; i++)tousMesActeurs.add(consommateurs.get(i));
-		while(nbTotalDeMessagesADeposer != nbTotalDeMessagesTraites){
-			i = rand.nextInt(tousMesActeurs.size());
+		while(nbTotalDeMessagesADeposer != tampon.getCons()){
+			System.out.println("A deposer : "+nbTotalDeMessagesADeposer+" Traite : "+tampon.getCons());
+			if(tousMesActeurs.size()!=0){ i = rand.nextInt(tousMesActeurs.size());
 			Acteur monActeur = tousMesActeurs.get(i);
 			if(monActeur instanceof Producteur){
-				for(i=0; i<monActeur.nombreDeMessages(); i++){
-					monActeur.run();
-				}
+				System.out.println("1");
+				monActeur.start();
 				tousMesActeurs.remove(i);
 			}
 			else if(monActeur instanceof Consommateur){
-				monActeur.run();
-				nbTotalDeMessagesTraites++;
+				//nbTotalDeMessagesTraites -= monActeur.nombreDeMessages();
+				System.out.println("2");
+				monActeur.start();
+				tousMesActeurs.remove(i);
+				//nbTotalDeMessagesTraites += monActeur.nombreDeMessages();
+			}
+			}
+			else{
+				nbTotalDeMessagesTraites = 0;
+				//for(i=0; i<nbCons; i++) nbTotalDeMessagesTraites += consommateurs.get(i).nombreDeMessages();
+				//notifyAll();
 			}
 		}
 	}

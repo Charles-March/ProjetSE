@@ -33,9 +33,12 @@ public class Consommateur extends Acteur implements _Consommateur {
 	@Override
 	public void run(){
 			try {
-				obs.consommationMessage(this, tp.get(this),this.moyenneTempsDeTraitement());
+				while(true){tp.get(this);
+				//obs.consommationMessage(this, tp.get(this),this.moyenneTempsDeTraitement());
 				System.out.println("Consommé !");
 				nbMessagesTraites++;
+				((ProdCons) tp).consomme();
+				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
