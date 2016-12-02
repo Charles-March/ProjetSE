@@ -1,5 +1,6 @@
 package jus.poc.prodcons.v1;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import jus.poc.prodcons.Acteur;
@@ -15,6 +16,8 @@ public class Producteur extends Acteur implements _Producteur {
 	private int nbMessagesADeposer;
 	private Observateur prodObservateur;
 	private List<Message> messages;
+	private Tampon tp;
+	private int ResteADeposer;
 	
 	public Producteur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement,Tampon tps)
 			throws ControlException {
@@ -22,9 +25,12 @@ public class Producteur extends Acteur implements _Producteur {
 		// TODO Auto-generated constructor stub
 		prodObservateur = observateur;
 		nbMessagesADeposer = (new Aleatoire(moyenneTempsDeTraitement, deviationTempsDeTraitement)).next();
+		messages = new LinkedList<Message>();
 		for(int i=0;i<nbMessagesADeposer;i++){
 			messages.add(new MessageX());
 		}
+		ResteADeposer=nbMessagesADeposer;
+		tp=tps;
 	}
 	
 	public int getNbDepot(){return nbMessagesADeposer;}
@@ -37,7 +43,14 @@ public class Producteur extends Acteur implements _Producteur {
 	
 	@Override
 	public void run(){
-		
+		try {
+			tp.put(this,messages.get(ResteADeposer));
+			ResteADeposer--;
+			prodObservateur.productionMessage(this, messages.get(ResteADeposer),this.moyenneTempsDeTraitement);		
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
