@@ -57,7 +57,7 @@ public class TestProdCons extends Simulateur {
 	protected void run() throws Exception {
 		// TODO Auto-generated method stub
 		init("options.xml");
-		
+				
 	}
 
 	public static void main(String[] args) {

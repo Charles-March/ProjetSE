@@ -18,39 +18,44 @@ public class ProdCons implements Tampon {
 	private int deviationNombreMoyenDeProduction;
 	private int nombreMoyenNbExemplaire;
 	private int deviationNombreMoyenNbExemplaire;
+	private int caseDepot;
+	private int caseConso;
 	
-	public boolean[] buffer = new boolean[nbBuffer];
-	public Message[] messages = new Message[nbBuffer];
+	public Message[] buffer;
 	
 	public ProdCons() {
-		// TODO Auto-generated constructor stub
-		// Initialisation des variables globales depuis le xml
-		
-		for(int i=0; i<nbBuffer; i++){buffer[i] = false;}
+		// TODO Auto-generated constructor stub		
+		buffer = new Message[nbBuffer];
+		caseDepot = 0;
+		caseConso = 0;
 	}
+	
+	public void setTailleBuffer(int taille){nbBuffer = taille;}
 
 	@Override
 	public int enAttente() {
 		// TODO Auto-generated method stub
-		int nbWaiting=0;
-		while(buffer[nbWaiting] == true){nbWaiting++;}
-		return nbWaiting;
+		return ((caseDepot - caseConso)%nbBuffer);
 	}
 
 	// /!\ /!\ VARIABLES PARTAGEES PENSER AU LOCK /!\ /!\
 	@Override
 	public Message get(_Consommateur arg0) throws Exception, InterruptedException {
 		// TODO Auto-generated method stub
-		while(buffer[0] == false){arg0.wait();}	//Ou mettre le notify()? --> dans consommation?
-		return null;
+		while(buffer[caseConso] == null)arg0.wait();
+		Message sortie = buffer[caseConso];
+		buffer[caseConso] = null;
+		caseConso = (caseConso+1) % nbBuffer;
+		return sortie;
 	}
 
 	@Override
 	public void put(_Producteur arg0, Message arg1) throws Exception, InterruptedException {
 		// TODO Auto-generated method stub
-		while(buffer[nbBuffer-1] == true){arg0.wait();}	//notify()????
-		buffer[nbBuffer-1] = true;
-		messages[nbBuffer-1] = arg1;
+		if(buffer[caseDepot] == null){
+			buffer[caseDepot] = arg1;
+			caseDepot = (caseDepot+1) % nbBuffer;
+		}
 	}
 
 	@Override

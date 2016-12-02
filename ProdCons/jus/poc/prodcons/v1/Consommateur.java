@@ -10,6 +10,7 @@ public class Consommateur extends Acteur implements _Consommateur {
 	private int id;
 	private int nbMessagesTraites;
 	
+	
 	public Consommateur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement)
 			throws ControlException {
 		super(typeConsommateur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
