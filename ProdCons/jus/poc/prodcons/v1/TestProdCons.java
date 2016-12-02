@@ -28,7 +28,7 @@ public class TestProdCons extends Simulateur {
 	protected List<Consommateur> consommateurs = new LinkedList<Consommateur>();
 	protected Observateur obs;
 	protected ProdCons tampon;
-	protected Acteur[] tousMesActeurs;
+	protected List<Acteur> tousMesActeurs = new LinkedList<Acteur>();
 
 	public TestProdCons(Observateur observateur) {
 		super(observateur);
@@ -78,10 +78,22 @@ public class TestProdCons extends Simulateur {
 			nbTotalDeMessagesADeposer += producteurs.get(i).nombreDeMessages();
 		}
 		for(i=0; i<nbCons; i++)consommateurs.add(new Consommateur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon));
-		tousMesActeurs = new Acteur[nbProd+nbCons];
-		for(i=0; i<nbProd; i++)tousMesActeurs[i] = producteurs.get(i);
-		for(i=0; i<nbCons; i++)tousMesActeurs[i+nbProd] = consommateurs.get(i);
-		i = rand.nextInt(nbProd+nbCons+1);
+		for(i=0; i<nbProd; i++)tousMesActeurs.add(producteurs.get(i));
+		for(i=0; i<nbCons; i++)tousMesActeurs.add(consommateurs.get(i));
+		while(nbTotalDeMessagesADeposer != nbTotalDeMessagesTraites){
+			i = rand.nextInt(tousMesActeurs.size());
+			Acteur monActeur = tousMesActeurs.get(i);
+			if(monActeur instanceof Producteur){
+				for(i=0; i<monActeur.nombreDeMessages(); i++){
+					monActeur.run();
+				}
+				tousMesActeurs.remove(i);
+			}
+			else if(monActeur instanceof Consommateur){
+				monActeur.run();
+				nbTotalDeMessagesTraites++;
+			}
+		}
 	}
 
 	public static void main(String[] args) {
