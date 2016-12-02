@@ -7,6 +7,7 @@ import jus.poc.prodcons.Aleatoire;
 import jus.poc.prodcons.ControlException;
 import jus.poc.prodcons.Message;
 import jus.poc.prodcons.Observateur;
+import jus.poc.prodcons.Tampon;
 import jus.poc.prodcons._Producteur;
 
 public class Producteur extends Acteur implements _Producteur {
@@ -15,7 +16,7 @@ public class Producteur extends Acteur implements _Producteur {
 	private Observateur prodObservateur;
 	private List<Message> messages;
 	
-	public Producteur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement)
+	public Producteur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement,Tampon tps)
 			throws ControlException {
 		super(typeProducteur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
 		// TODO Auto-generated constructor stub
@@ -33,7 +34,12 @@ public class Producteur extends Acteur implements _Producteur {
 		prodObservateur.depotMessage(this,messages.get(0));
 		messages.remove(0);
 	}
-
+	
+	@Override
+	public void run(){
+		
+	}
+	
 	@Override
 	//nombre de messages que le producteur doit produire 
 	public int nombreDeMessages() {
