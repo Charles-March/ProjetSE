@@ -1,7 +1,5 @@
 package jus.poc.prodcons.v1;
 
-import java.io.IOException;
-import java.util.InvalidPropertiesFormatException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -63,6 +61,14 @@ public class TestProdCons extends Simulateur {
 		 deviationNombreMoyenNbExemplaire = option.get("deviationNombreMoyenNbExemplaire");
 		 
 	 }
+	 
+	 private int nbTotalDeMessagesTraites(List<Consommateur> l){
+		 int res = 0;
+		 for(int i=0; i<l.size(); i++){
+			 res += l.get(i).nombreDeMessages();
+		 }
+		 return res;
+	 }
 	
 	@Override
 	protected void run() throws Exception {
@@ -71,7 +77,6 @@ public class TestProdCons extends Simulateur {
 		tampon = new ProdCons(nbBuffer);
 		int i;
 		int nbTotalDeMessagesADeposer = 0;
-		int nbTotalDeMessagesTraites = 0;
 		Random rand = new Random();
 		for(i=0; i<nbProd; i++){
 			producteurs.add(new Producteur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon));
@@ -80,27 +85,18 @@ public class TestProdCons extends Simulateur {
 		for(i=0; i<nbCons; i++)consommateurs.add(new Consommateur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon));
 		for(i=0; i<nbProd; i++)tousMesActeurs.add(producteurs.get(i));
 		for(i=0; i<nbCons; i++)tousMesActeurs.add(consommateurs.get(i));
-		while(nbTotalDeMessagesADeposer != tampon.getCons()){
-			System.out.println("A deposer : "+nbTotalDeMessagesADeposer+" Traite : "+tampon.getCons());
-			if(tousMesActeurs.size()!=0){ i = rand.nextInt(tousMesActeurs.size());
-			Acteur monActeur = tousMesActeurs.get(i);
-			if(monActeur instanceof Producteur){
-				System.out.println("1");
-				monActeur.start();
-				tousMesActeurs.remove(i);
-			}
-			else if(monActeur instanceof Consommateur){
-				//nbTotalDeMessagesTraites -= monActeur.nombreDeMessages();
-				System.out.println("2");
-				monActeur.start();
-				tousMesActeurs.remove(i);
-				//nbTotalDeMessagesTraites += monActeur.nombreDeMessages();
-			}
-			}
-			else{
-				nbTotalDeMessagesTraites = 0;
-				//for(i=0; i<nbCons; i++) nbTotalDeMessagesTraites += consommateurs.get(i).nombreDeMessages();
-				//notifyAll();
+		while(nbTotalDeMessagesADeposer != nbTotalDeMessagesTraites(consommateurs)){
+			if(tousMesActeurs.size() != 0){
+				i = rand.nextInt(tousMesActeurs.size());
+				Acteur monActeur = tousMesActeurs.get(i);
+				if(monActeur instanceof Producteur){
+					monActeur.start();
+					tousMesActeurs.remove(i);
+				}
+				else if(monActeur instanceof Consommateur){
+					monActeur.start();
+					tousMesActeurs.remove(i);
+				}
 			}
 		}
 	}

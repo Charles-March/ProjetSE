@@ -14,44 +14,33 @@ import jus.poc.prodcons._Producteur;
 public class Producteur extends Acteur implements _Producteur {
 
 	private int nbMessagesADeposer;
-	private Observateur prodObservateur;
 	private List<Message> messages;
-	private Tampon tp;
-	private int ResteADeposer;
+	private Tampon tampon;
 	
-	public Producteur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement,Tampon tps)
+	public Producteur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement,Tampon tp)
 			throws ControlException {
 		super(typeProducteur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
 		// TODO Auto-generated constructor stub
-		prodObservateur = observateur;
 		nbMessagesADeposer = (new Aleatoire(moyenneTempsDeTraitement, deviationTempsDeTraitement)).next();
 		messages = new LinkedList<Message>();
 		for(int i=0;i<nbMessagesADeposer;i++){
 			messages.add(new MessageX());
 		}
-		ResteADeposer=nbMessagesADeposer;
-		tp=tps;
-	}
-	
-	public int getNbDepot(){return nbMessagesADeposer;}
-	public void setNbDepot(int i){nbMessagesADeposer = i;}
-	
-	public void Depot() throws ControlException{
-		prodObservateur.depotMessage(this,messages.get(0));
-		messages.remove(0);
+		tampon = tp;
 	}
 	
 	@Override
 	public void run(){
-		try {
-			for(int i=0; i<nbMessagesADeposer; i++){
-				tp.put(this,messages.get(ResteADeposer-1));
-				ResteADeposer--;
-				//prodObservateur.productionMessage(this, messages.get(ResteADeposer),this.moyenneTempsDeTraitement);
-			}		
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		for(int i=0; i<nbMessagesADeposer; i++){
+			try {
+				tampon.put(this,messages.get(i));
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 	
