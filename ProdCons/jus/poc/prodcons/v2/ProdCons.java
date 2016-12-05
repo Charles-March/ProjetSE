@@ -6,7 +6,6 @@ import jus.poc.prodcons.Message;
 import jus.poc.prodcons.Tampon;
 import jus.poc.prodcons._Consommateur;
 import jus.poc.prodcons._Producteur;
-import sun.tools.tree.CastExpression;
 
 public class ProdCons implements Tampon {
 
@@ -17,6 +16,7 @@ public class ProdCons implements Tampon {
 	public Semaphore plein;
 	public Semaphore mutexDepot = new Semaphore(1);
 	public Semaphore mutexConso = new Semaphore(1);
+	private Semaphore vide = new Semaphore(1);
 	
 	public ProdCons(int taille) {
 		// TODO Auto-generated constructor stub		
@@ -39,6 +39,9 @@ public class ProdCons implements Tampon {
 	public synchronized Message get(_Consommateur arg0) throws Exception, InterruptedException {
 		// TODO Auto-generated method stub
 		Message sortie;
+		//On s'empare du semaphore de consommation (qu'on appelle vide car il reste acquis si le message lu est le dernier disponible
+		//soit si apres lecture le buffer est vide
+		vide.acquire();
 		//On protege notre variable caseConso afin que 2 consommateurs n'accedent pas a la meme case en meme temps
 		//exclusion mutuelle
 		mutexConso.acquire();
@@ -47,6 +50,8 @@ public class ProdCons implements Tampon {
 		mutexConso.release();
 		//Nouvelle place dispo dans le buffer on libère une place
 		plein.release();
+		//si le buffer est vide on ne rend pas la main aux prochain consommateurs, on les bloque
+		if(enAttente()!=0)vide.release();
 		return sortie;
 	}
 
@@ -60,6 +65,8 @@ public class ProdCons implements Tampon {
 		buffer[caseDepot] = (MessageX) arg1;
 		caseDepot = (++caseDepot)%nbBuffer;
 		mutexDepot.release();
+		//on libere les consommateurs car un message viens d'etre pose
+		vide.release();
 	}
 
 	@Override
