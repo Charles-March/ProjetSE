@@ -4,7 +4,7 @@ import jus.poc.prodcons.Message;
 
 public class MessageX implements Message {
 	
-	public String mon_message;
+	private String mon_message;
 	
 	public MessageX(String contenu) {
 		// TODO Auto-generated constructor stub

@@ -1,4 +1,4 @@
-package jus.poc.prodcons.v2;
+package jus.poc.prodcons.v3;
 
 import jus.poc.prodcons.Message;
 
