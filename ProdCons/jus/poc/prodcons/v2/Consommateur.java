@@ -6,16 +6,15 @@ import java.util.List;
 import jus.poc.prodcons.Acteur;
 import jus.poc.prodcons.ControlException;
 import jus.poc.prodcons.Observateur;
-import jus.poc.prodcons.Tampon;
 import jus.poc.prodcons._Consommateur;
 
 public class Consommateur extends Acteur implements _Consommateur {
 
 	private int nbMessagesTraites;
-	private Tampon tampon;
+	private ProdCons tampon;
 	private List<MessageX> messagesLus;
 	
-	public Consommateur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement, Tampon tp)
+	public Consommateur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement, ProdCons tp)
 			throws ControlException {
 		super(typeConsommateur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
 		// TODO Auto-generated constructor stub
@@ -28,18 +27,6 @@ public class Consommateur extends Acteur implements _Consommateur {
 	
 	@Override
 	public void run(){
-		while(true){
-			try {
-				messagesLus.add((MessageX)tampon.get(this));
-				nbMessagesTraites++;
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
 	}
 
 	@Override

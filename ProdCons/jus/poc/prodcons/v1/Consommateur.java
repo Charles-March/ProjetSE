@@ -6,7 +6,6 @@ import java.util.List;
 import jus.poc.prodcons.Acteur;
 import jus.poc.prodcons.ControlException;
 import jus.poc.prodcons.Observateur;
-import jus.poc.prodcons.Tampon;
 import jus.poc.prodcons._Consommateur;
 
 public class Consommateur extends Acteur implements _Consommateur {
