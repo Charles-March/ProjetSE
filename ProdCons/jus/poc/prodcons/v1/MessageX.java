@@ -6,10 +6,14 @@ public class MessageX implements Message {
 	
 	public String mon_message;
 	
-	public MessageX() {
+	public MessageX(String contenu) {
 		// TODO Auto-generated constructor stub
 		super();
-		mon_message = "Tiens voila de quoi s'occuper !";
+		mon_message = contenu;
+	}
+	
+	public String toString(){
+		return mon_message;
 	}
 
 }

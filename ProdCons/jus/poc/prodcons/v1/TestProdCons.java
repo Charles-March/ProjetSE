@@ -90,19 +90,17 @@ public class TestProdCons extends Simulateur {
 				i = rand.nextInt(tousMesActeurs.size());
 				Acteur monActeur = tousMesActeurs.get(i);
 				if(monActeur instanceof Producteur){
-					System.out.println("je depose tous mes messages");
 					monActeur.start();
 					tousMesActeurs.remove(i);
 				}
 				else if(monActeur instanceof Consommateur){
-					System.out.println("Ouais je peux enfin consommer :)");
 					monActeur.start();
 					tousMesActeurs.remove(i);
 				}
 			}
-		    System.out.println("A deposer : "+nbTotalDeMessagesADeposer+" Traite : "+ nbTotalDeMessagesTraites(consommateurs)); 
 		}
-		System.out.println("On est sortit du while! La bonne nouvelle =D");
+		for(i=0; i<consommateurs.size(); i++)
+			System.out.println(consommateurs.get(i).getConsommes().toString());
 	}
 
 	public static void main(String[] args) {

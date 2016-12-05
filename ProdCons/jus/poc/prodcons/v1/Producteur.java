@@ -6,7 +6,6 @@ import java.util.List;
 import jus.poc.prodcons.Acteur;
 import jus.poc.prodcons.Aleatoire;
 import jus.poc.prodcons.ControlException;
-import jus.poc.prodcons.Message;
 import jus.poc.prodcons.Observateur;
 import jus.poc.prodcons.Tampon;
 import jus.poc.prodcons._Producteur;
@@ -14,7 +13,7 @@ import jus.poc.prodcons._Producteur;
 public class Producteur extends Acteur implements _Producteur {
 
 	private int nbMessagesADeposer;
-	private List<Message> messages;
+	private List<MessageX> messages;
 	private Tampon tampon;
 	
 	public Producteur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement,Tampon tp)
@@ -22,9 +21,9 @@ public class Producteur extends Acteur implements _Producteur {
 		super(typeProducteur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
 		// TODO Auto-generated constructor stub
 		nbMessagesADeposer = (new Aleatoire(moyenneTempsDeTraitement, deviationTempsDeTraitement)).next();
-		messages = new LinkedList<Message>();
+		messages = new LinkedList<MessageX>();
 		for(int i=0;i<nbMessagesADeposer;i++){
-			messages.add(new MessageX());
+			messages.add(new MessageX("Ceci est le message n°"+(i+1)+" depose par le producteur "+identification()));
 		}
 		tampon = tp;
 	}
