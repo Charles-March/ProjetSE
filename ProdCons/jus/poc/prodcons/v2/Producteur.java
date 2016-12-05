@@ -7,7 +7,6 @@ import jus.poc.prodcons.Acteur;
 import jus.poc.prodcons.Aleatoire;
 import jus.poc.prodcons.ControlException;
 import jus.poc.prodcons.Observateur;
-import jus.poc.prodcons.Tampon;
 import jus.poc.prodcons._Producteur;
 
 public class Producteur extends Acteur implements _Producteur {
@@ -30,6 +29,17 @@ public class Producteur extends Acteur implements _Producteur {
 	
 	@Override
 	public void run(){
+		for(int i=0; i<nbMessagesADeposer; i++){
+			try {
+				tampon.put(this,messages.get(i));
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	@Override

@@ -7,6 +7,7 @@ import jus.poc.prodcons.Acteur;
 import jus.poc.prodcons.ControlException;
 import jus.poc.prodcons.Observateur;
 import jus.poc.prodcons._Consommateur;
+import jus.poc.prodcons.v1.MessageX;
 
 public class Consommateur extends Acteur implements _Consommateur {
 
@@ -27,6 +28,18 @@ public class Consommateur extends Acteur implements _Consommateur {
 	
 	@Override
 	public void run(){
+		while(true){
+			try {
+				messagesLus.add((MessageX)tampon.get(this));
+				nbMessagesTraites++;
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override
