@@ -86,7 +86,6 @@ public class TestProdCons extends Simulateur {
 		for(i=0; i<nbProd; i++)tousMesActeurs.add(producteurs.get(i));
 		for(i=0; i<nbCons; i++)tousMesActeurs.add(consommateurs.get(i));
 		while(nbTotalDeMessagesADeposer != nbTotalDeMessagesTraites(consommateurs)){
-		    System.out.println("A deposer : "+nbTotalDeMessagesADeposer+" Traite : "+ nbTotalDeMessagesTraites(consommateurs)); 
 			if(tousMesActeurs.size() != 0){
 				i = rand.nextInt(tousMesActeurs.size());
 				Acteur monActeur = tousMesActeurs.get(i);
@@ -101,6 +100,7 @@ public class TestProdCons extends Simulateur {
 					tousMesActeurs.remove(i);
 				}
 			}
+		    System.out.println("A deposer : "+nbTotalDeMessagesADeposer+" Traite : "+ nbTotalDeMessagesTraites(consommateurs)); 
 		}
 		System.out.println("On est sortit du while! La bonne nouvelle =D");
 	}

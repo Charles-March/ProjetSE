@@ -10,12 +10,12 @@ public class ProdCons implements Tampon {
 	private int nbBuffer;
 	private int caseDepot;
 	private int caseConso;
-	public Message[] buffer;
+	public MessageX[] buffer;
 	
 	public ProdCons(int taille) {
 		// TODO Auto-generated constructor stub		
 		nbBuffer = taille;
-		buffer = new Message[taille];
+		buffer = new MessageX[taille];
 		caseDepot = 0;
 		caseConso = 0;
 	}
@@ -57,7 +57,7 @@ public class ProdCons implements Tampon {
 			}
 			catch (InterruptedException e){}
 		}
-		buffer[caseDepot] = arg1;
+		buffer[caseDepot] = (MessageX) arg1;
 		caseDepot = (caseDepot+1) % nbBuffer;
 		notifyAll();
 	}
