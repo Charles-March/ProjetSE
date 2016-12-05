@@ -23,6 +23,8 @@ public class Producteur extends Acteur implements _Producteur {
 		messages = new LinkedList<MessageX>();
 		for(int i=0;i<nbMessagesADeposer;i++){
 			messages.add(new MessageX("Ceci est le message n°"+(i+1)+" depose par le producteur "+identification()));
+			//messages.get(i).setNbExemplaire((new Aleatoire(nbExemplaireMoyen, deviationNbExemplaire)).next());
+			messages.get(i).setNbExemplaire(3);
 		}
 		tampon = tp;
 	}

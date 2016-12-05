@@ -46,6 +46,7 @@ public class ProdCons implements Tampon {
 		//exclusion mutuelle
 		mutexConso.acquire();
 		sortie = buffer[caseConso];
+		buffer[caseConso] = null;
 		caseConso = (++caseConso)%nbBuffer;
 		mutexConso.release();
 		//Nouvelle place dispo dans le buffer on libère une place
