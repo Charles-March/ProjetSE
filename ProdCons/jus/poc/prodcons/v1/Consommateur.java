@@ -12,10 +12,10 @@ import jus.poc.prodcons._Consommateur;
 public class Consommateur extends Acteur implements _Consommateur {
 
 	private int nbMessagesTraites;
-	private Tampon tampon;
+	private ProdCons tampon;
 	private List<MessageX> messagesLus;
 	
-	public Consommateur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement, Tampon tp)
+	public Consommateur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement, ProdCons tp)
 			throws ControlException {
 		super(typeConsommateur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
 		// TODO Auto-generated constructor stub

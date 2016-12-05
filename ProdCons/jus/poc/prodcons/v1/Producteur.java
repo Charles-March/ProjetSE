@@ -14,9 +14,9 @@ public class Producteur extends Acteur implements _Producteur {
 
 	private int nbMessagesADeposer;
 	private List<MessageX> messages;
-	private Tampon tampon;
+	private ProdCons tampon;
 	
-	public Producteur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement,Tampon tp)
+	public Producteur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement,ProdCons tp)
 			throws ControlException {
 		super(typeProducteur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
 		// TODO Auto-generated constructor stub

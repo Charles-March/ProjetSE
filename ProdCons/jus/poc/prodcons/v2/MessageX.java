@@ -3,9 +3,17 @@ package jus.poc.prodcons.v2;
 import jus.poc.prodcons.Message;
 
 public class MessageX implements Message {
-
-	public MessageX() {
+	
+	public String mon_message;
+	
+	public MessageX(String contenu) {
 		// TODO Auto-generated constructor stub
+		super();
+		mon_message = contenu;
+	}
+	
+	public String toString(){
+		return mon_message;
 	}
 
 }
