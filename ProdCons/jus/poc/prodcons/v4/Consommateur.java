@@ -2,18 +2,23 @@ package jus.poc.prodcons.v4;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import jus.poc.prodcons.Acteur;
 import jus.poc.prodcons.ControlException;
 import jus.poc.prodcons.Observateur;
 import jus.poc.prodcons._Consommateur;
-import jus.poc.prodcons.v1.MessageX;
+import jus.poc.prodcons.v4.MessageX;
 
 public class Consommateur extends Acteur implements _Consommateur {
 
 	private int nbMessagesTraites;
 	private ProdCons tampon;
 	private List<MessageX> messagesLus;
+	private int tempsDeTraitement;
+	private Semaphore plein;
+	private Semaphore vide;
+	public Semaphore mutex;
 	
 	public Consommateur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement, ProdCons tp)
 			throws ControlException {
@@ -22,6 +27,10 @@ public class Consommateur extends Acteur implements _Consommateur {
 		tampon = tp;
 		nbMessagesTraites = 0;
 		messagesLus = new LinkedList<MessageX>();
+		tempsDeTraitement = moyenneTempsDeTraitement;
+		vide = tp.vide;
+		plein = tp.plein;
+		mutex = tp.mutexConso;
 	}
 	
 	public List<MessageX> getConsommes(){return messagesLus;}
@@ -30,8 +39,12 @@ public class Consommateur extends Acteur implements _Consommateur {
 	public void run(){
 		while(true){
 			try {
+				plein.acquire();
+				mutex.acquire();
 				messagesLus.add((MessageX)tampon.get(this));
 				nbMessagesTraites++;
+				mutex.release();
+				vide.release();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -13,6 +13,7 @@ public class Consommateur extends Acteur implements _Consommateur {
 	private int nbMessagesTraites;
 	private ProdCons tampon;
 	private List<MessageX> messagesLus;
+	private boolean etat = false;
 	
 	public Consommateur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement, ProdCons tp)
 			throws ControlException {
@@ -25,9 +26,12 @@ public class Consommateur extends Acteur implements _Consommateur {
 	
 	public List<MessageX> getConsommes(){return messagesLus;}
 	
+	public void arret(){etat = false;}
+	
 	@Override
 	public void run(){
-		while(true){
+		etat = true;
+		while(etat){
 			try {
 				messagesLus.add((MessageX)tampon.get(this));
 				nbMessagesTraites++;

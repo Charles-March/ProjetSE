@@ -7,9 +7,9 @@ import java.util.Random;
 import jus.poc.prodcons.Acteur;
 import jus.poc.prodcons.Observateur;
 import jus.poc.prodcons.Simulateur;
-import jus.poc.prodcons.v1.Consommateur;
-import jus.poc.prodcons.v1.ProdCons;
-import jus.poc.prodcons.v1.Producteur;
+import jus.poc.prodcons.v2.Consommateur;
+import jus.poc.prodcons.v2.ProdCons;
+import jus.poc.prodcons.v2.Producteur;
 
 public class TestProdCons extends Simulateur {
 	

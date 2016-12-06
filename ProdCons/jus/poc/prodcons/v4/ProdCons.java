@@ -16,10 +16,10 @@ public class ProdCons implements Tampon {
 	private int caseDepot;
 	private int caseConso;
 	private MessageX[] buffer;
-	private Semaphore plein;
-	private Semaphore mutexDepot = new Semaphore(1);
-	private Semaphore mutexConso = new Semaphore(1);
-	private Semaphore vide = new Semaphore(1);
+	public Semaphore plein;
+	public Semaphore mutexDepot = new Semaphore(1);
+	public Semaphore mutexConso = new Semaphore(1);
+	public Semaphore vide;
 	private List<_Acteur> listeDAttente;
 	
 	public ProdCons(int taille) {
@@ -28,7 +28,8 @@ public class ProdCons implements Tampon {
 		buffer = new MessageX[taille];
 		caseDepot = 0;
 		caseConso = 0;
-		plein = new Semaphore(nbBuffer);
+		plein = new Semaphore(0);
+		vide = new Semaphore(taille);
 		listeDAttente = new LinkedList<_Acteur>();
 	}
 
