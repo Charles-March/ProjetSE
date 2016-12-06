@@ -15,7 +15,7 @@ public class Consommateur extends Acteur implements _Consommateur {
 	private int nbMessagesTraites;
 	private ProdCons tampon;
 	private List<MessageX> messagesLus;
-	private int tempsDeTraitement;
+	private boolean etat = false;
 	private Semaphore plein;
 	private Semaphore vide;
 	public Semaphore mutex;
@@ -27,7 +27,6 @@ public class Consommateur extends Acteur implements _Consommateur {
 		tampon = tp;
 		nbMessagesTraites = 0;
 		messagesLus = new LinkedList<MessageX>();
-		tempsDeTraitement = moyenneTempsDeTraitement;
 		vide = tp.vide;
 		plein = tp.plein;
 		mutex = tp.mutexConso;
@@ -35,9 +34,12 @@ public class Consommateur extends Acteur implements _Consommateur {
 	
 	public List<MessageX> getConsommes(){return messagesLus;}
 	
+	public void arret(){etat = false;}
+	
 	@Override
 	public void run(){
-		while(true){
+		etat = true;
+		while(etat){
 			try {
 				plein.acquire();
 				mutex.acquire();

@@ -106,6 +106,11 @@ public class TestProdCons extends Simulateur {
 					tousMesActeurs.remove(i);
 				}
 			}
+			else{
+				for(i=0; i<consommateurs.size(); i++){
+					consommateurs.get(i).arret();
+				}
+			}
 		}
 		for(i=0; i<consommateurs.size(); i++)
 			System.out.println(consommateurs.get(i).getConsommes().toString());
