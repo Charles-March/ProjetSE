@@ -15,7 +15,6 @@ public class Consommateur extends Acteur implements _Consommateur {
 	private int nbMessagesTraites;
 	private ProdCons tampon;
 	private List<MessageX> messagesLus;
-	private int tempsDeTraitement;
 	private boolean etat = false;
 	private Semaphore plein;
 	private Semaphore vide;
@@ -28,7 +27,6 @@ public class Consommateur extends Acteur implements _Consommateur {
 		tampon = tp;
 		nbMessagesTraites = 0;
 		messagesLus = new LinkedList<MessageX>();
-		tempsDeTraitement = moyenneTempsDeTraitement;
 		vide = tp.vide;
 		plein = tp.plein;
 		mutex = tp.mutexConso;
@@ -49,7 +47,7 @@ public class Consommateur extends Acteur implements _Consommateur {
 				observateur.retraitMessage(this, messagesLus.get(messagesLus.size()-1));
 				mutex.release();
 				vide.release();
-				observateur.consommationMessage(this, messagesLus.get(messagesLus.size()-1), tempsDeTraitement);
+				observateur.consommationMessage(this, messagesLus.get(messagesLus.size()-1), moyenneTempsDeTraitement);
 				nbMessagesTraites++;
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block

@@ -27,7 +27,6 @@ public class Producteur extends Acteur implements _Producteur {
 		messages = new LinkedList<MessageX>();
 		for(int i=0;i<nbMessagesADeposer;i++){
 			messages.add(new MessageX("Ceci est le message n°"+(i+1)+" depose par le producteur "+identification()));
-			observateur.productionMessage(this, messages.get(i), moyenneTempsDeTraitement);
 		}
 		tampon = tp;
 		vide = tp.vide;
@@ -39,6 +38,7 @@ public class Producteur extends Acteur implements _Producteur {
 	public void run(){
 		for(int i=0; i<nbMessagesADeposer; i++){
 			try {
+				observateur.productionMessage(this, messages.get(i), moyenneTempsDeTraitement);
 				vide.acquire();
 				mutex.acquire();
 				tampon.put(this,messages.get(i));

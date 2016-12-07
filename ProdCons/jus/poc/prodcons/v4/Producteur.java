@@ -17,7 +17,8 @@ public class Producteur extends Acteur implements _Producteur {
 	private ProdCons tampon;
 	private Semaphore plein;
 	private Semaphore vide;
-	public Semaphore mutex;
+	private Semaphore mutex;
+	private Semaphore activite;
 	
 	public Producteur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement,ProdCons tp, int nbExemplaireMoyen, int deviationNbExemplaire)
 			throws ControlException {
@@ -34,6 +35,7 @@ public class Producteur extends Acteur implements _Producteur {
 		vide = tp.vide;
 		plein = tp.plein;
 		mutex = tp.mutexDepot;
+		activite = new Semaphore(1);
 	}
 	
 	@Override
@@ -41,9 +43,11 @@ public class Producteur extends Acteur implements _Producteur {
 		for(int i=0; i<nbMessagesADeposer; i++){
 			try {
 				vide.acquire();
+				activite.acquire();
 				mutex.acquire();
 				tampon.put(this,messages.get(i));
 				mutex.release();
+				if(messages.get(i).getNbExemplaire() == 0)activite.release();
 				plein.release();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
