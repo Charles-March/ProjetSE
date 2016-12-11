@@ -46,13 +46,13 @@ public class Consommateur extends Acteur implements _Consommateur {
 				plein.acquire();
 				mutex.acquire();
 				reception = (MessageX)tampon.get(this);
-				observateur.retraitMessage(this, reception);
 				mutex.release();
 				vide.release();
-				if(reception.toString() == MessageX.CONDITION_ARRET.toString()){
+				if(reception == null){
 					arret();
 				}
 				else{
+					observateur.retraitMessage(this, reception);
 					messagesLus.add(reception);
 					observateur.consommationMessage(this, messagesLus.get(messagesLus.size()-1), moyenneTempsDeTraitement);
 					nbMessagesTraites++;

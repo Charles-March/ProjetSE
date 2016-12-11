@@ -9,7 +9,7 @@ import jus.poc.prodcons.Acteur;
 import jus.poc.prodcons.ControlException;
 import jus.poc.prodcons.Observateur;
 import jus.poc.prodcons._Consommateur;
-import jus.poc.prodcons.v3.MessageX;
+import jus.poc.prodcons.v5.MessageX;
 
 @SuppressWarnings("rawtypes")
 
@@ -48,21 +48,26 @@ public class Consommateur extends Acteur implements _Consommateur {
 		MessageX reception;
 		while(etat){
 			try {
+				//tampon.debutConsommation();
 				sleep(200);
 				plein.acquire();
 				mutex.acquire();
 				reception = (MessageX)tampon.get(this);
-				observateur.retraitMessage(this, reception);
-				mutex.release();
-				vide.release();
-				if(reception.toString() == MessageX.CONDITION_ARRET.toString()){
+				if(reception == null){
 					arret();
+					System.out.println("adieu !");
 				}
 				else{
+					System.out.println("TU ne rentres pas l� wtf?");
 					messagesLus.add(reception);
 					observateur.consommationMessage(this, messagesLus.get(messagesLus.size()-1), moyenneTempsDeTraitement);
 					nbMessagesTraites++;
+					System.out.println(reception);
+					observateur.retraitMessage(this, reception);
 				}
+				mutex.release();
+				vide.release();
+				//tampon.finConsommation();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

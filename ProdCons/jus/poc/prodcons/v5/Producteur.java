@@ -13,7 +13,7 @@ import jus.poc.prodcons._Producteur;
 public class Producteur extends Acteur implements _Producteur {
 
 	private int nbMessagesADeposer;
-	private List<MessageX> messages;
+	public List<MessageX> messages;
 	private ProdCons tampon;
 	private Semaphore plein;
 	private Semaphore vide;
@@ -26,7 +26,7 @@ public class Producteur extends Acteur implements _Producteur {
 		nbMessagesADeposer = (new Aleatoire(moyenneTempsDeTraitement, deviationTempsDeTraitement)).next();
 		messages = new LinkedList<MessageX>();
 		for(int i=0;i<nbMessagesADeposer;i++){
-			messages.add(new MessageX("Ceci est le message n°"+(i+1)+" depose par le producteur "+identification()));
+			messages.add(new MessageX("Ceci est le message nï¿½"+(i+1)+" depose par le producteur "+identification()));
 		}
 		tampon = tp;
 		vide = tp.vide;
@@ -36,8 +36,10 @@ public class Producteur extends Acteur implements _Producteur {
 	
 	@Override
 	public void run(){
-		for(int i=0; i<nbMessagesADeposer; i++){
-			try {
+		try {
+			//tampon.debutProduction();
+			System.out.println("Arrivï¿½e dans le try du producteur");
+			for(int i=0; i<nbMessagesADeposer; i++){
 				observateur.productionMessage(this, messages.get(i), moyenneTempsDeTraitement);
 				sleep(200);
 				vide.acquire();
@@ -46,16 +48,17 @@ public class Producteur extends Acteur implements _Producteur {
 				observateur.depotMessage(this, messages.get(i));
 				mutex.release();
 				plein.release();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		//tampon.finProduction();
 	}
-	
+		
 	@Override
 	//nombre de messages que le producteur doit produire 
 	public int nombreDeMessages() {
