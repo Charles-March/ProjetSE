@@ -7,10 +7,10 @@ import java.util.Random;
 import jus.poc.prodcons.Acteur;
 import jus.poc.prodcons.Observateur;
 import jus.poc.prodcons.Simulateur;
-import jus.poc.prodcons.v3.MessageX;
-import jus.poc.prodcons.v3.Consommateur;
-import jus.poc.prodcons.v3.ProdCons;
-import jus.poc.prodcons.v3.Producteur;
+import jus.poc.prodcons.v5.MessageX;
+import jus.poc.prodcons.v5.Consommateur;
+import jus.poc.prodcons.v5.ProdCons;
+import jus.poc.prodcons.v5.Producteur;
 
 public class TestProdCons extends Simulateur {
 	
@@ -94,22 +94,32 @@ public class TestProdCons extends Simulateur {
 		}
 		for(i=0; i<nbProd; i++)tousMesActeurs.add(producteurs.get(i));
 		for(i=0; i<nbCons; i++)tousMesActeurs.add(consommateurs.get(i));
+		int x = tousMesActeurs.size();
 		while(nbTotalDeMessagesADeposer != nbTotalDeMessagesTraites(consommateurs)){
+		//for(i=0; i<x; i++){
+			System.out.println(nbProd+" producteurs");
+			System.out.println(nbCons+" consommateurs");
+			System.out.println("Entr�e dans le while (check du nb de messages) "+x);
 			if(tousMesActeurs.size() != 0){
+				System.out.println("whut?");
 				i = rand.nextInt(tousMesActeurs.size());
 				Acteur monActeur = tousMesActeurs.get(i);
 				if(monActeur instanceof Producteur){
+					System.out.println("mon producteur coucou");
 					monActeur.start();
 					tousMesActeurs.remove(i);
 				}
 				else if(monActeur instanceof Consommateur){
+					System.out.println("plop");
 					monActeur.start();
 					tousMesActeurs.remove(i);
 				}
 			}
+			System.out.println("deposer "+nbTotalDeMessagesADeposer+" receptionnes "+nbTotalDeMessagesTraites(consommateurs));
 		}
 		for(i=0; i<nbCons; i++){
-			tampon.put(new Producteur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon), MessageX.CONDITION_ARRET);
+			System.out.println("a+");
+			//tampon.put(new Producteur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon), MessageX.CONDITION_ARRET);
 			tampon.plein.release();
 			System.out.println(consommateurs.get(i).getConsommes().toString());
 		}

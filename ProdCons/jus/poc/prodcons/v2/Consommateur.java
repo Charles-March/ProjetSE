@@ -48,7 +48,7 @@ public class Consommateur extends Acteur implements _Consommateur {
 				reception = (MessageX)tampon.get(this);
 				mutex.release();
 				vide.release();
-				if(reception.toString() == MessageX.CONDITION_ARRET.toString()){
+				if(reception == null){
 					arret();
 				}
 				else{
