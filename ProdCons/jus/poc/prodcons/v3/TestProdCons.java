@@ -1,4 +1,4 @@
-package jus.poc.prodcons.v1;
+package jus.poc.prodcons.v3;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -7,6 +7,10 @@ import java.util.Random;
 import jus.poc.prodcons.Acteur;
 import jus.poc.prodcons.Observateur;
 import jus.poc.prodcons.Simulateur;
+import jus.poc.prodcons.v3.MessageX;
+import jus.poc.prodcons.v3.Consommateur;
+import jus.poc.prodcons.v3.ProdCons;
+import jus.poc.prodcons.v3.Producteur;
 
 public class TestProdCons extends Simulateur {
 	
@@ -74,15 +78,20 @@ public class TestProdCons extends Simulateur {
 	protected void run() throws Exception {
 		// TODO Auto-generated method stub
 		init("options.xml");
+		obs.init(nbProd,nbCons,nbBuffer);
 		tampon = new ProdCons(nbBuffer);
 		int i;
 		int nbTotalDeMessagesADeposer = 0;
 		Random rand = new Random();
 		for(i=0; i<nbProd; i++){
 			producteurs.add(new Producteur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon));
+			obs.newProducteur(producteurs.get(i));
 			nbTotalDeMessagesADeposer += producteurs.get(i).nombreDeMessages();
 		}
-		for(i=0; i<nbCons; i++)consommateurs.add(new Consommateur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon));
+		for(i=0; i<nbCons; i++){
+			consommateurs.add(new Consommateur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon));
+			obs.newConsommateur(consommateurs.get(i));
+		}
 		for(i=0; i<nbProd; i++)tousMesActeurs.add(producteurs.get(i));
 		for(i=0; i<nbCons; i++)tousMesActeurs.add(consommateurs.get(i));
 		while(nbTotalDeMessagesADeposer != nbTotalDeMessagesTraites(consommateurs)){
@@ -101,6 +110,7 @@ public class TestProdCons extends Simulateur {
 		}
 		for(i=0; i<consommateurs.size(); i++){
 			tampon.put(new Producteur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon), MessageX.CONDITION_ARRET);
+			tampon.plein.release();
 			System.out.println(consommateurs.get(i).getConsommes().toString());
 		}
 	}

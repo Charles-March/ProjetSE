@@ -1,4 +1,4 @@
-package jus.poc.prodcons.v1;
+package jus.poc.prodcons.v2;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -7,6 +7,10 @@ import java.util.Random;
 import jus.poc.prodcons.Acteur;
 import jus.poc.prodcons.Observateur;
 import jus.poc.prodcons.Simulateur;
+import jus.poc.prodcons.v2.MessageX;
+import jus.poc.prodcons.v2.Consommateur;
+import jus.poc.prodcons.v2.ProdCons;
+import jus.poc.prodcons.v2.Producteur;
 
 public class TestProdCons extends Simulateur {
 	
@@ -101,6 +105,7 @@ public class TestProdCons extends Simulateur {
 		}
 		for(i=0; i<consommateurs.size(); i++){
 			tampon.put(new Producteur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon), MessageX.CONDITION_ARRET);
+			tampon.plein.release();
 			System.out.println(consommateurs.get(i).getConsommes().toString());
 		}
 	}

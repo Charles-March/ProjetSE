@@ -1,4 +1,6 @@
-package jus.poc.prodcons.v1;
+package jus.poc.prodcons.v2;
+
+import java.util.concurrent.Semaphore;
 
 import jus.poc.prodcons.Message;
 import jus.poc.prodcons.Tampon;
@@ -11,6 +13,10 @@ public class ProdCons implements Tampon {
 	private int caseDepot;
 	private int caseConso;
 	public MessageX[] buffer;
+	public Semaphore plein;
+	public Semaphore mutexDepot = new Semaphore(1);
+	public Semaphore mutexConso = new Semaphore(1);
+	public Semaphore vide;
 	
 	public ProdCons(int taille) {
 		// TODO Auto-generated constructor stub		
@@ -18,6 +24,8 @@ public class ProdCons implements Tampon {
 		buffer = new MessageX[taille];
 		caseDepot = 0;
 		caseConso = 0;
+		plein = new Semaphore(0);
+		vide = new Semaphore(taille);
 	}
 
 	@Override
@@ -31,35 +39,18 @@ public class ProdCons implements Tampon {
 	@Override
 	public synchronized Message get(_Consommateur arg0) throws Exception, InterruptedException {
 		// TODO Auto-generated method stub
-		//test si la case est vide = tampon vide
-		while(buffer[caseConso] == null){
-			try{
-				wait();	//en attente d'un depot
-			}
-			catch (InterruptedException e){}
-		}
-		//on stock le message
-		Message sortie = buffer[caseConso];
-		//on vide la case
+		Message sortie;
+		sortie = buffer[caseConso];
 		buffer[caseConso] = null;
-		caseConso = (caseConso+1) % nbBuffer;
-		notifyAll();
+		caseConso = (caseConso+1)%nbBuffer;
 		return sortie;
 	}
 
 	@Override
 	public synchronized void put(_Producteur arg0, Message arg1) throws Exception, InterruptedException {
 		// TODO Auto-generated method stub
-		//le tampon est plein
-		while(buffer[caseDepot] != null){
-			try{
-				wait();	//on attend qu'un message soit lu
-			}
-			catch (InterruptedException e){}
-		}
 		buffer[caseDepot] = (MessageX) arg1;
-		caseDepot = (caseDepot+1) % nbBuffer;
-		notifyAll();
+		caseDepot = (caseDepot+1)%nbBuffer;
 	}
 
 	@Override
