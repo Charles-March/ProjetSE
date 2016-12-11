@@ -31,10 +31,18 @@ public class Consommateur extends Acteur implements _Consommateur {
 	@Override
 	public void run(){
 		etat = true;
+		MessageX reception;
 		while(etat){
 			try {
-				messagesLus.add((MessageX)tampon.get(this));
-				nbMessagesTraites++;
+				sleep(200);
+				reception = (MessageX)tampon.get(this);
+				if(reception.toString() == MessageX.CONDITION_ARRET.toString()){
+					arret();
+				}
+				else{
+					messagesLus.add(reception);
+					nbMessagesTraites++;
+				}
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

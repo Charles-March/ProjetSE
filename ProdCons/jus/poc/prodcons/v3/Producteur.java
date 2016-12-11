@@ -39,6 +39,7 @@ public class Producteur extends Acteur implements _Producteur {
 		for(int i=0; i<nbMessagesADeposer; i++){
 			try {
 				observateur.productionMessage(this, messages.get(i), moyenneTempsDeTraitement);
+				sleep(200);
 				vide.acquire();
 				mutex.acquire();
 				tampon.put(this,messages.get(i));

@@ -38,6 +38,7 @@ public class Producteur extends Acteur implements _Producteur {
 	public void run(){
 		for(int i=0; i<nbMessagesADeposer; i++){
 			try {
+				sleep(200);
 				vide.acquire();
 				mutex.acquire();
 				tampon.put(this,messages.get(i));

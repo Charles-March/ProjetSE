@@ -17,7 +17,7 @@ public class ProdCons implements Tampon {
 	public Semaphore mutexDepot = new Semaphore(1);
 	public Semaphore mutexConso = new Semaphore(1);
 	public Semaphore vide;
-	private Semaphore listeDAttente;
+	//private Semaphore listeDAttente;
 	
 	public ProdCons(int taille) {
 		// TODO Auto-generated constructor stub		
@@ -27,7 +27,7 @@ public class ProdCons implements Tampon {
 		caseConso = 0;
 		plein = new Semaphore(0);
 		vide = new Semaphore(taille);
-		listeDAttente = new Semaphore(1);
+		//listeDAttente = new Semaphore(1);
 	}
 
 	@Override
@@ -47,9 +47,9 @@ public class ProdCons implements Tampon {
 		//si tous les messages ont été lus alors on passe au suivant et on vide la case
 		if(buffer[caseConso].getNbExemplaire() == 0){
 			//listeDAttente.release();
-			buffer[caseConso] = null;
-			caseConso = (++caseConso)%nbBuffer;
 		}
+		buffer[caseConso] = null;
+		caseConso = (++caseConso)%nbBuffer;
 		//on place notre consommateur dans la liste d'attente
 		/*else{
 			listeDAttente.acquire();

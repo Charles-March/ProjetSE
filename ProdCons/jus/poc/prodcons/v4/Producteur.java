@@ -18,7 +18,7 @@ public class Producteur extends Acteur implements _Producteur {
 	private Semaphore plein;
 	private Semaphore vide;
 	private Semaphore mutex;
-	private Semaphore activite;
+	public Semaphore activite;
 	
 	public Producteur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement,ProdCons tp, int nbExemplaireMoyen, int deviationNbExemplaire)
 			throws ControlException {
@@ -28,8 +28,8 @@ public class Producteur extends Acteur implements _Producteur {
 		messages = new LinkedList<MessageX>();
 		for(int i=0;i<nbMessagesADeposer;i++){
 			messages.add(new MessageX("Ceci est le message n°"+(i+1)+" depose par le producteur "+identification()));
-			//messages.get(i).setNbExemplaire((new Aleatoire(nbExemplaireMoyen, deviationNbExemplaire)).next());
-			messages.get(i).setNbExemplaire(3);
+			messages.get(i).setNbExemplaire((new Aleatoire(nbExemplaireMoyen, deviationNbExemplaire)).next());
+			//messages.get(i).setNbExemplaire(3);
 		}
 		tampon = tp;
 		vide = tp.vide;
@@ -42,12 +42,13 @@ public class Producteur extends Acteur implements _Producteur {
 	public void run(){
 		for(int i=0; i<nbMessagesADeposer; i++){
 			try {
+				sleep(200);
 				vide.acquire();
-				activite.acquire();
+				//activite.acquire();
 				mutex.acquire();
 				tampon.put(this,messages.get(i));
 				mutex.release();
-				if(messages.get(i).getNbExemplaire() == 0)activite.release();
+				//if(messages.get(i).getNbExemplaire() == 0)activite.release();
 				plein.release();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block

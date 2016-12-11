@@ -19,7 +19,7 @@ public class Consommateur extends Acteur implements _Consommateur {
 	private Semaphore plein;
 	private Semaphore vide;
 	private Semaphore mutex;
-	private Semaphore activite;
+	public Semaphore activite;
 	
 	public Consommateur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement, ProdCons tp)
 			throws ControlException {
@@ -41,16 +41,24 @@ public class Consommateur extends Acteur implements _Consommateur {
 	@Override
 	public void run(){
 		etat = true;
+		MessageX reception;
 		while(etat){
 			try {
+				sleep(200);
 				plein.acquire();
-				activite.acquire();
+				//activite.acquire();
 				mutex.acquire();
-				messagesLus.add((MessageX)tampon.get(this));
-				nbMessagesTraites++;
+				reception = (MessageX)tampon.get(this);
 				mutex.release();
-				if(messagesLus.get(messagesLus.size()-1).getNbExemplaire() == 0)activite.release();
+				//if(messagesLus.get(messagesLus.size()-1).getNbExemplaire() == 0)activite.release();
 				vide.release();
+				if(reception.toString() == MessageX.CONDITION_ARRET.toString()){
+					arret();
+				}
+				else{
+					messagesLus.add(reception);
+					nbMessagesTraites++;
+				}
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
