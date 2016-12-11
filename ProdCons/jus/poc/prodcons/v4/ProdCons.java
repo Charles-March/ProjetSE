@@ -12,11 +12,12 @@ public class ProdCons implements Tampon {
 	private int nbBuffer;
 	private int caseDepot;
 	private int caseConso;
-	public MessageX[] buffer;
+	private MessageX[] buffer;
 	public Semaphore plein;
 	public Semaphore mutexDepot = new Semaphore(1);
 	public Semaphore mutexConso = new Semaphore(1);
-	private Semaphore vide = new Semaphore(1);
+	public Semaphore vide;
+	//private Semaphore listeDAttente;
 	
 	public ProdCons(int taille) {
 		// TODO Auto-generated constructor stub		
@@ -24,7 +25,9 @@ public class ProdCons implements Tampon {
 		buffer = new MessageX[taille];
 		caseDepot = 0;
 		caseConso = 0;
-		plein = new Semaphore(nbBuffer);
+		plein = new Semaphore(0);
+		vide = new Semaphore(taille);
+		//listeDAttente = new Semaphore(1);
 	}
 
 	@Override
@@ -38,35 +41,30 @@ public class ProdCons implements Tampon {
 	@Override
 	public synchronized Message get(_Consommateur arg0) throws Exception, InterruptedException {
 		// TODO Auto-generated method stub
-		Message sortie;
-		//On s'empare du semaphore de consommation (qu'on appelle vide car il reste acquis si le message lu est le dernier disponible
-		//soit si apres lecture le buffer est vide
-		vide.acquire();
-		//On protege notre variable caseConso afin que 2 consommateurs n'accedent pas a la meme case en meme temps
-		//exclusion mutuelle
-		mutexConso.acquire();
+		MessageX sortie;
 		sortie = buffer[caseConso];
+		buffer[caseConso].setNbExemplaire(buffer[caseConso].getNbExemplaire()-1);
+		//si tous les messages ont été lus alors on passe au suivant et on vide la case
+		if(buffer[caseConso].getNbExemplaire() == 0){
+			//listeDAttente.release();
+		}
+		buffer[caseConso] = null;
 		caseConso = (++caseConso)%nbBuffer;
-		mutexConso.release();
-		//Nouvelle place dispo dans le buffer on libère une place
-		plein.release();
-		//si le buffer est vide on ne rend pas la main aux prochain consommateurs, on les bloque
-		if(enAttente()!=0)vide.release();
+		//on place notre consommateur dans la liste d'attente
+		/*else{
+			listeDAttente.acquire();
+		}*/
 		return sortie;
 	}
 
 	@Override
 	public synchronized void put(_Producteur arg0, Message arg1) throws Exception, InterruptedException {
 		// TODO Auto-generated method stub
-		//On occupe une place dans le Semaphore = on depose un nouveau message donc il y a une place en moins de vide dans le buffer
-		plein.acquire();
-		//Protection de caseDepot = exclusion mutuelle
-		mutexDepot.acquire();
 		buffer[caseDepot] = (MessageX) arg1;
 		caseDepot = (++caseDepot)%nbBuffer;
-		mutexDepot.release();
-		//on libere les consommateurs car un message viens d'etre pose
-		vide.release();
+		/*if(((MessageX) arg1).getNbExemplaire() > 1){
+			listeDAttente.acquire();
+		}*/
 	}
 
 	@Override

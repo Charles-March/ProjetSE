@@ -2,18 +2,23 @@ package jus.poc.prodcons.v2;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import jus.poc.prodcons.Acteur;
 import jus.poc.prodcons.ControlException;
 import jus.poc.prodcons.Observateur;
 import jus.poc.prodcons._Consommateur;
-import jus.poc.prodcons.v1.MessageX;
+import jus.poc.prodcons.v2.MessageX;
 
 public class Consommateur extends Acteur implements _Consommateur {
 
 	private int nbMessagesTraites;
 	private ProdCons tampon;
 	private List<MessageX> messagesLus;
+	private boolean etat = false;
+	private Semaphore plein;
+	private Semaphore vide;
+	public Semaphore mutex;
 	
 	public Consommateur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement, ProdCons tp)
 			throws ControlException {
@@ -22,16 +27,34 @@ public class Consommateur extends Acteur implements _Consommateur {
 		tampon = tp;
 		nbMessagesTraites = 0;
 		messagesLus = new LinkedList<MessageX>();
+		vide = tp.vide;
+		plein = tp.plein;
+		mutex = tp.mutexConso;
 	}
 	
 	public List<MessageX> getConsommes(){return messagesLus;}
 	
+	public void arret(){etat = false;}
+	
 	@Override
 	public void run(){
-		while(true){
+		etat = true;
+		MessageX reception;
+		while(etat){
 			try {
-				messagesLus.add((MessageX)tampon.get(this));
-				nbMessagesTraites++;
+				sleep(200);
+				plein.acquire();
+				mutex.acquire();
+				reception = (MessageX)tampon.get(this);
+				mutex.release();
+				vide.release();
+				if(reception.toString() == MessageX.CONDITION_ARRET.toString()){
+					arret();
+				}
+				else{
+					messagesLus.add(reception);
+					nbMessagesTraites++;
+				}
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

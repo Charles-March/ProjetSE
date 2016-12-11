@@ -7,9 +7,10 @@ import java.util.Random;
 import jus.poc.prodcons.Acteur;
 import jus.poc.prodcons.Observateur;
 import jus.poc.prodcons.Simulateur;
-import jus.poc.prodcons.v1.Consommateur;
-import jus.poc.prodcons.v1.ProdCons;
-import jus.poc.prodcons.v1.Producteur;
+import jus.poc.prodcons.v4.MessageX;
+import jus.poc.prodcons.v4.Consommateur;
+import jus.poc.prodcons.v4.ProdCons;
+import jus.poc.prodcons.v4.Producteur;
 
 public class TestProdCons extends Simulateur {
 	
@@ -82,7 +83,7 @@ public class TestProdCons extends Simulateur {
 		int nbTotalDeMessagesADeposer = 0;
 		Random rand = new Random();
 		for(i=0; i<nbProd; i++){
-			producteurs.add(new Producteur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon));
+			producteurs.add(new Producteur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon, nombreMoyenNbExemplaire, deviationNombreMoyenNbExemplaire));
 			nbTotalDeMessagesADeposer += producteurs.get(i).nombreDeMessages();
 		}
 		for(i=0; i<nbCons; i++)consommateurs.add(new Consommateur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon));
@@ -102,8 +103,11 @@ public class TestProdCons extends Simulateur {
 				}
 			}
 		}
-		for(i=0; i<consommateurs.size(); i++)
+		for(i=0; i<consommateurs.size(); i++){
+			tampon.put(new Producteur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon, nombreMoyenNbExemplaire, deviationNombreMoyenNbExemplaire), MessageX.CONDITION_ARRET);
+			tampon.plein.release();
 			System.out.println(consommateurs.get(i).getConsommes().toString());
+		}
 	}
 
 	public static void main(String[] args) {

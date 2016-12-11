@@ -31,6 +31,7 @@ public class Producteur extends Acteur implements _Producteur {
 	public void run(){
 		for(int i=0; i<nbMessagesADeposer; i++){
 			try {
+				sleep(200);
 				tampon.put(this,messages.get(i));
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
