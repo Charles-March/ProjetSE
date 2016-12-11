@@ -2,6 +2,7 @@ package jus.poc.prodcons.v5;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Semaphore;
 
 import jus.poc.prodcons.Acteur;
@@ -10,6 +11,8 @@ import jus.poc.prodcons.Observateur;
 import jus.poc.prodcons._Consommateur;
 import jus.poc.prodcons.v3.MessageX;
 
+@SuppressWarnings("rawtypes")
+
 public class Consommateur extends Acteur implements _Consommateur {
 
 	private int nbMessagesTraites;
@@ -17,10 +20,12 @@ public class Consommateur extends Acteur implements _Consommateur {
 	private List<MessageX> messagesLus;
 	private boolean etat = false;
 	private Semaphore plein;
+	
+	protected BlockingQueue queue = null;
 	private Semaphore vide;
 	public Semaphore mutex;
 	
-	public Consommateur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement, ProdCons tp)
+	public Consommateur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement, ProdCons tp, BlockingQueue q)
 			throws ControlException {
 		super(typeConsommateur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
 		// TODO Auto-generated constructor stub
@@ -30,6 +35,7 @@ public class Consommateur extends Acteur implements _Consommateur {
 		vide = tp.vide;
 		plein = tp.plein;
 		mutex = tp.mutexConso;
+		queue = q;
 	}
 	
 	public List<MessageX> getConsommes(){return messagesLus;}

@@ -41,7 +41,6 @@ public class Producteur extends Acteur implements _Producteur {
 	
 	@Override
 	public void run(){
-		tourne = false;
 		for(int i=0; i<nbMessagesADeposer; i++){
 			try {
 				System.out.println(Thread.currentThread().getName()+" hello!" + i);
@@ -49,17 +48,17 @@ public class Producteur extends Acteur implements _Producteur {
 				System.out.println("vide");
 				vide.acquire();
 				System.out.println("activite");
-				if( !tourne) activite.acquire();
-				tourne=true;
+				activite.acquire();
 				System.out.println("mutex");
 				mutex.acquire();
 				tampon.put(this,messages.get(i));
+				
 				mutex.release();
-				plein.release();
+				
 				if(messages.get(i).getNbExemplaire() == 0){
 					activite.release();
-					tourne = false;
 				}
+				tampon.plein.release();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

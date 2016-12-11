@@ -45,16 +45,20 @@ public class Consommateur extends Acteur implements _Consommateur {
 		while(etat){
 			try {
 				sleep(200);
+				System.out.println("1");
 				plein.acquire();
+				System.out.println("2");
 				activite.acquire();
+				System.out.println("3");
 				mutex.acquire();
+				System.out.println("4");
 				reception = (MessageX)tampon.get(this);
 				System.out.println(Thread.currentThread().getName()+" lecture du message "+reception);
-				mutex.release();
+				
 				if(reception.getNbExemplaire() == 0){
 					activite.release();
 				}
-				vide.release();
+				
 				if(reception.toString() == MessageX.CONDITION_ARRET.toString()){
 					arret();
 				}
@@ -62,6 +66,8 @@ public class Consommateur extends Acteur implements _Consommateur {
 					messagesLus.add(reception);
 					nbMessagesTraites++;
 				}
+				mutex.release();
+				vide.release();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
