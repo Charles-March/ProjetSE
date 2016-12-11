@@ -46,11 +46,14 @@ public class Consommateur extends Acteur implements _Consommateur {
 			try {
 				sleep(200);
 				plein.acquire();
-				//activite.acquire();
+				activite.acquire();
 				mutex.acquire();
 				reception = (MessageX)tampon.get(this);
+				System.out.println(Thread.currentThread().getName()+" lecture du message "+reception);
 				mutex.release();
-				//if(messagesLus.get(messagesLus.size()-1).getNbExemplaire() == 0)activite.release();
+				if(reception.getNbExemplaire() == 0){
+					activite.release();
+				}
 				vide.release();
 				if(reception.toString() == MessageX.CONDITION_ARRET.toString()){
 					arret();

@@ -95,15 +95,15 @@ public class TestProdCons extends Simulateur {
 				Acteur monActeur = tousMesActeurs.get(i);
 				if(monActeur instanceof Producteur){
 					monActeur.start();
-					tousMesActeurs.remove(i);
 				}
 				else if(monActeur instanceof Consommateur){
 					monActeur.start();
-					tousMesActeurs.remove(i);
 				}
+				System.out.println("entree de "+tousMesActeurs.get(i));
+				tousMesActeurs.remove(i);
 			}
 		}
-		for(i=0; i<consommateurs.size(); i++){
+		for(i=0; i<nbCons; i++){
 			tampon.put(new Producteur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon, nombreMoyenNbExemplaire, deviationNombreMoyenNbExemplaire), MessageX.CONDITION_ARRET);
 			tampon.plein.release();
 			System.out.println(consommateurs.get(i).getConsommes().toString());

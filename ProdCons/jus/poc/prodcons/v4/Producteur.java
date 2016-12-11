@@ -28,8 +28,8 @@ public class Producteur extends Acteur implements _Producteur {
 		messages = new LinkedList<MessageX>();
 		for(int i=0;i<nbMessagesADeposer;i++){
 			messages.add(new MessageX("Ceci est le message n°"+(i+1)+" depose par le producteur "+identification()));
-			messages.get(i).setNbExemplaire((new Aleatoire(nbExemplaireMoyen, deviationNbExemplaire)).next());
-			//messages.get(i).setNbExemplaire(3);
+			//messages.get(i).setNbExemplaire((new Aleatoire(nbExemplaireMoyen, deviationNbExemplaire)).next());
+			messages.get(i).setNbExemplaire(3);
 		}
 		tampon = tp;
 		vide = tp.vide;
@@ -42,14 +42,20 @@ public class Producteur extends Acteur implements _Producteur {
 	public void run(){
 		for(int i=0; i<nbMessagesADeposer; i++){
 			try {
+				System.out.println(Thread.currentThread().getName()+" hello!" + i);
 				sleep(200);
+				System.out.println("vide");
 				vide.acquire();
-				//activite.acquire();
+				System.out.println("activite");
+				activite.acquire();
+				System.out.println("mutex");
 				mutex.acquire();
 				tampon.put(this,messages.get(i));
 				mutex.release();
-				//if(messages.get(i).getNbExemplaire() == 0)activite.release();
 				plein.release();
+				if(messages.get(i).getNbExemplaire() == 0){
+					activite.release();
+				}
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
