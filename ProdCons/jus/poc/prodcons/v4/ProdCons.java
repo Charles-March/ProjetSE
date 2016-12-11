@@ -68,9 +68,9 @@ public class ProdCons implements Tampon {
 		}
 		System.out.println("Listes des msgs :");
 		for(int i=0;i<buffer.length;i++){
-			System.out.println(buffer[i].toString());
+			System.out.println(buffer[i]!=null?buffer[i].toString():"");
 		}
-		
+		plein.release();
 		return sortie;
 	}
 
