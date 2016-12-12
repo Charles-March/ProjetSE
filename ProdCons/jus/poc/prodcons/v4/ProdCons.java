@@ -46,6 +46,7 @@ public class ProdCons implements Tampon {
 		if(buffer[caseConso]==null) return null;
 		buffer[caseConso].setNbExemplaire(buffer[caseConso].getNbExemplaire()-1);
 		//si tous les messages ont été lus alors on passe au suivant et on vide la case
+		//synchronized(listeDAttente){
 		if(buffer[caseConso].getNbExemplaire() == 0){
 			for(int i=0; i<listeDAttente.size(); i++){
 				if(listeDAttente.get(i) instanceof Consommateur){
@@ -53,18 +54,25 @@ public class ProdCons implements Tampon {
 					listeDAttente.remove(i);
 				}
 			}
+			System.out.println("ma liste :");
+			for(int i=0; i<listeDAttente.size(); i++){
+				System.out.println(listeDAttente.get(i) + " "+i);
+			}
 			buffer[caseConso] = null;
 			caseConso = (++caseConso)%nbBuffer;
+			System.out.println(listeDAttente.get(0) + " indice 0");
 			((Producteur)listeDAttente.get(0)).activite.V();
 			listeDAttente.remove(0);
-			vide.V();
+			//vide.V();
 		}
 		//on place notre consommateur dans la liste d'attente
 		else{
 			
 			listeDAttente.add(arg0);
+			vide.P();
 			plein.V();
 		}
+		//}
 		return sortie;
 	}
 

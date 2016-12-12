@@ -98,13 +98,14 @@ public class TestProdCons extends Simulateur {
 				tousMesActeurs.remove(i);
 			}
 		}
-		
+		System.out.println("sortie?");
 		for(i=0; i<nbCons; i++){
 			consommateurs.get(i).activite.V();
 			tampon.plein.V();
 			System.out.println(consommateurs.get(i).getConsommes().toString());
 			
 		}
+		System.out.println(Thread.currentThread().getName()+" en cours");
 	}
 
 	public static void main(String[] args) {
