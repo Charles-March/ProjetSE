@@ -18,12 +18,8 @@ public class Consommateur extends Acteur implements _Consommateur {
 	private int nbMessagesTraites;
 	private ProdCons tampon;
 	private List<MessageX> messagesLus;
-	private boolean etat = false;
-	private Semaphore plein;
-	
+	private boolean etat = false;	
 	protected BlockingQueue queue = null;
-	private Semaphore vide;
-	public Semaphore mutex;
 	
 	public Consommateur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement, ProdCons tp, BlockingQueue q)
 			throws ControlException {
@@ -32,9 +28,6 @@ public class Consommateur extends Acteur implements _Consommateur {
 		tampon = tp;
 		nbMessagesTraites = 0;
 		messagesLus = new LinkedList<MessageX>();
-		vide = tp.vide;
-		plein = tp.plein;
-		mutex = tp.mutexConso;
 		queue = q;
 	}
 	
@@ -50,8 +43,8 @@ public class Consommateur extends Acteur implements _Consommateur {
 			try {
 				//tampon.debutConsommation();
 				sleep(200);
-				plein.acquire();
-				mutex.acquire();
+				tampon.plein.P();
+				tampon.mutex.P();
 				reception = (MessageX)tampon.get(this);
 				if(reception == null){
 					arret();
@@ -65,8 +58,8 @@ public class Consommateur extends Acteur implements _Consommateur {
 					System.out.println(reception);
 					observateur.retraitMessage(this, reception);
 				}
-				mutex.release();
-				vide.release();
+				tampon.mutex.V();
+				tampon.vide.V();
 				//tampon.finConsommation();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block

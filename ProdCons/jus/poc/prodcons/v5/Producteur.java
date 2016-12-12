@@ -15,9 +15,6 @@ public class Producteur extends Acteur implements _Producteur {
 	private int nbMessagesADeposer;
 	public List<MessageX> messages;
 	private ProdCons tampon;
-	private Semaphore plein;
-	private Semaphore vide;
-	public Semaphore mutex;
 	
 	public Producteur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement,ProdCons tp)
 			throws ControlException {
@@ -29,9 +26,6 @@ public class Producteur extends Acteur implements _Producteur {
 			messages.add(new MessageX("Ceci est le message n�"+(i+1)+" depose par le producteur "+identification()));
 		}
 		tampon = tp;
-		vide = tp.vide;
-		plein = tp.plein;
-		mutex = tp.mutexDepot;
 	}
 	
 	@Override
@@ -42,12 +36,12 @@ public class Producteur extends Acteur implements _Producteur {
 			for(int i=0; i<nbMessagesADeposer; i++){
 				observateur.productionMessage(this, messages.get(i), moyenneTempsDeTraitement);
 				sleep(200);
-				vide.acquire();
-				mutex.acquire();
+				tampon.vide.P();
+				tampon.mutex.P();
 				tampon.put(this,messages.get(i));
 				observateur.depotMessage(this, messages.get(i));
-				mutex.release();
-				plein.release();
+				tampon.mutex.V();
+				tampon.plein.V();
 			}
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block

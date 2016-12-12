@@ -120,7 +120,7 @@ public class TestProdCons extends Simulateur {
 		for(i=0; i<nbCons; i++){
 			System.out.println("a+");
 			//tampon.put(new Producteur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon), MessageX.CONDITION_ARRET);
-			tampon.plein.release();
+			tampon.plein.V();
 			System.out.println(consommateurs.get(i).getConsommes().toString());
 		}
 	}

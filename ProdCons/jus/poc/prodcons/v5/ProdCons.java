@@ -18,10 +18,8 @@ public class ProdCons implements Tampon {
 	private int prod;
 	private int cons;
 	private MessageX[] buffer;
-	public Semaphore plein;
-	public Semaphore mutexDepot = new Semaphore(1);
-	public Semaphore mutexConso = new Semaphore(1);
-	public Semaphore vide;
+	public monSemaphore plein, vide;
+	public monSemaphore mutex = new monSemaphore(1);
 	private Lock lock = new ReentrantLock();
 	private Condition prioProd = lock.newCondition();
 	private Condition prioCons = lock.newCondition();
@@ -34,8 +32,8 @@ public class ProdCons implements Tampon {
 		caseConso = 0;
 		prod = 0;
 		cons = 0;
-		plein = new Semaphore(0);
-		vide = new Semaphore(taille);
+		plein = new monSemaphore(0);
+		vide = new monSemaphore(taille);
 	}
 
 	@Override
