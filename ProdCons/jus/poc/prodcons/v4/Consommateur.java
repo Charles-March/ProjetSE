@@ -45,17 +45,18 @@ public class Consommateur extends Acteur implements _Consommateur {
 		while(etat){
 			try {
 				sleep(200);
-		//		System.out.println(this.getName() + " Etat : 1");
+				System.out.println(this.getName() + " Etat : 1");
 				plein.acquire();
-		//		System.out.println(this.getName() +" Etat : 2");
+				System.out.println(this.getName() +" Etat : 2");
 				activite.acquire();
-		//		System.out.println(this.getName() +" Etat  : 3");
+				System.out.println(this.getName() +" Etat  : 3");
 				mutex.acquire();
-		//		System.out.println(this.getName() +" Etat : 4");
+				System.out.println(this.getName() +" Etat : 4");
 				reception = (MessageX)tampon.get(this);
-		//		System.out.println(Thread.currentThread().getName()+" lecture du message "+reception);
+				System.out.println(Thread.currentThread().getName()+" lecture du message "+reception);
 				
 				if(reception == null){
+					System.out.println(this.getName()+ " Déco !");
 					arret();
 				}
 				else{

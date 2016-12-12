@@ -37,18 +37,18 @@ public class Producteur extends Acteur implements _Producteur {
 		mutex = tp.mutexDepot;
 		activite = new Semaphore(1);
 	}
-
+    
 	@Override
 	public void run(){
 		for(int i=0; i<nbMessagesADeposer; i++){
 			try {
 		//		System.out.println(Thread.currentThread().getName()+" hello!" + i);
 				sleep(200);
-		//		System.out.println("vide");
+				System.out.println("vide");
 				vide.acquire();
-		//		System.out.println("activite");
+				System.out.println("activite");
 				activite.acquire();
-	//			System.out.println("mutex");
+				System.out.println("mutex");
 				mutex.acquire();
 				tampon.put(this,messages.get(i));
 				
