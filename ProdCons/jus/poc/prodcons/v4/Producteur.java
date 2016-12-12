@@ -37,7 +37,7 @@ public class Producteur extends Acteur implements _Producteur {
 		mutex = tp.mutexDepot;
 		activite = new Semaphore(1);
 	}
-	
+
 	@Override
 	public void run(){
 		for(int i=0; i<nbMessagesADeposer; i++){
