@@ -65,6 +65,13 @@ public class ProdCons implements Tampon {
 			
 			buffer[caseConso] = null;
 			caseConso = (++caseConso)%nbBuffer;
+			
+			for(int i=0; i<listeDAttente.size(); i++){
+				if(listeDAttente.get(i) instanceof Consommateur){
+					((Consommateur)listeDAttente.get(i)).activite.release();
+					listeDAttente.remove(i);
+				}
+			}
 			((Producteur)listeDAttente.get(0)).activite.release();
 			listeDAttente.remove(0);
 			vide.release();
