@@ -34,10 +34,10 @@ public class Producteur extends Acteur implements _Producteur {
 				observateur.productionMessage(this, messages.get(i), moyenneTempsDeTraitement);
 				sleep(200);
 				tampon.vide.P();
-				tampon.mutex.P();
+				tampon.mutexIn.P();
 				tampon.put(this,messages.get(i));
 				observateur.depotMessage(this, messages.get(i));
-				tampon.mutex.V();
+				tampon.mutexIn.V();
 				tampon.plein.V();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block

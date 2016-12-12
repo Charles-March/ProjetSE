@@ -12,7 +12,7 @@ public class ProdCons implements Tampon {
 	private int caseConso;
 	public MessageX[] buffer;
 	public monSemaphore plein, vide;
-	public monSemaphore mutex = new monSemaphore(1);
+	public monSemaphore mutexIn, mutexOut;
 	
 	public ProdCons(int taille) {
 		// TODO Auto-generated constructor stub		
@@ -22,6 +22,8 @@ public class ProdCons implements Tampon {
 		caseConso = 0;
 		plein = new monSemaphore(0);
 		vide = new monSemaphore(taille);
+		mutexIn = new monSemaphore(1);
+		mutexOut = new monSemaphore(1);
 	}
 
 	@Override
@@ -33,7 +35,7 @@ public class ProdCons implements Tampon {
 	}
 	
 	@Override
-	public synchronized Message get(_Consommateur arg0) throws Exception, InterruptedException {
+	public Message get(_Consommateur arg0) throws Exception, InterruptedException {
 		// TODO Auto-generated method stub
 		Message sortie;
 		sortie = buffer[caseConso];
@@ -43,7 +45,7 @@ public class ProdCons implements Tampon {
 	}
 
 	@Override
-	public synchronized void put(_Producteur arg0, Message arg1) throws Exception, InterruptedException {
+	public void put(_Producteur arg0, Message arg1) throws Exception, InterruptedException {
 		// TODO Auto-generated method stub
 		buffer[caseDepot] = (MessageX) arg1;
 		caseDepot = (++caseDepot)%nbBuffer;

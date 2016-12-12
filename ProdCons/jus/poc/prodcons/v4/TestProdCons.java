@@ -103,7 +103,7 @@ public class TestProdCons extends Simulateur {
 				tousMesActeurs.remove(i);
 			}
 		}
-		
+		System.out.println("FIN");
 		for(i=0; i<nbCons; i++){
 			//tampon.put(new Producteur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon, nombreMoyenNbExemplaire, deviationNombreMoyenNbExemplaire), MessageX.CONDITION_ARRET);
 			consommateurs.get(i).activite.release();

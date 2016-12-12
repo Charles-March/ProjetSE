@@ -33,9 +33,9 @@ public class Producteur extends Acteur implements _Producteur {
 			try {
 				sleep(200);
 				tampon.vide.P();
-				tampon.mutex.P();
+				tampon.mutexIn.P();
 				tampon.put(this,messages.get(i));
-				tampon.mutex.V();
+				tampon.mutexIn.V();
 				tampon.plein.V();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block

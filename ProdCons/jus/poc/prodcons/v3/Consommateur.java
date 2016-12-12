@@ -37,9 +37,9 @@ public class Consommateur extends Acteur implements _Consommateur {
 			try {
 				sleep(200);
 				tampon.plein.P();
-				tampon.mutex.P();
+				tampon.mutexOut.P();
 				reception = (MessageX)tampon.get(this);
-				tampon.mutex.V();
+				tampon.mutexOut.V();
 				tampon.vide.V();
 				if(reception == null){
 					arret();
