@@ -48,11 +48,14 @@ public class ProdCons implements Tampon {
 		// TODO Auto-generated method stub
 		MessageX sortie;
 		sortie = buffer[caseConso];
+		if(buffer[caseConso]==null) return null;
 		buffer[caseConso].setNbExemplaire(buffer[caseConso].getNbExemplaire()-1);
 		//si tous les messages ont été lus alors on passe au suivant et on vide la case
 		if(buffer[caseConso].getNbExemplaire() == 0){
-			((Producteur)listeDAttente.get(0)).activite.release();
-			listeDAttente.remove(0);
+		/*	if(!(listeDAttente.get(0) instanceof Producteur)){
+				return sortie;
+			}*/
+			
 			for(int i=0; i<listeDAttente.size(); i++){
 				if(listeDAttente.get(i) instanceof Consommateur){
 					((Consommateur)listeDAttente.get(i)).activite.release();
@@ -61,6 +64,9 @@ public class ProdCons implements Tampon {
 			}
 			buffer[caseConso] = null;
 			caseConso = (++caseConso)%nbBuffer;
+			((Producteur)listeDAttente.get(0)).activite.release();
+			listeDAttente.remove(0);
+			vide.release();
 		}
 		//on place notre consommateur dans la liste d'attente
 		else{
@@ -68,11 +74,11 @@ public class ProdCons implements Tampon {
 			listeDAttente.add(arg0);
 			plein.release();
 		}
-		System.out.println("Listes des msgs :");
+	/*	System.out.println("Listes des msgs :");
 		for(int i=0;i<buffer.length;i++){
 			System.out.println(buffer[i]!=null?buffer[i].toString():"");
 		}
-		
+	*/
 		return sortie;
 	}
 
@@ -80,7 +86,7 @@ public class ProdCons implements Tampon {
 	public synchronized void put(_Producteur arg0, Message arg1) throws Exception, InterruptedException {
 		// TODO Auto-generated method stub
 		buffer[caseDepot] = (MessageX) arg1;
-		System.out.println(Thread.currentThread().getName()+" depot du message "+arg1);
+	//	System.out.println(Thread.currentThread().getName()+" depot du message "+arg1);
 		caseDepot = (++caseDepot)%nbBuffer;
 		if(((MessageX) arg1).getNbExemplaire() > 1){
 			listeDAttente.add(arg0);

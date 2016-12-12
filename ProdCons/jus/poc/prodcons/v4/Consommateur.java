@@ -45,29 +45,32 @@ public class Consommateur extends Acteur implements _Consommateur {
 		while(etat){
 			try {
 				sleep(200);
-				System.out.println("1");
+		//		System.out.println(this.getName() + " Etat : 1");
 				plein.acquire();
-				System.out.println("2");
+		//		System.out.println(this.getName() +" Etat : 2");
 				activite.acquire();
-				System.out.println("3");
+		//		System.out.println(this.getName() +" Etat  : 3");
 				mutex.acquire();
-				System.out.println("4");
+		//		System.out.println(this.getName() +" Etat : 4");
 				reception = (MessageX)tampon.get(this);
-				System.out.println(Thread.currentThread().getName()+" lecture du message "+reception);
+		//		System.out.println(Thread.currentThread().getName()+" lecture du message "+reception);
 				
-				if(reception.getNbExemplaire() == 0){
-					activite.release();
-				}
-				
-				if(reception.toString() == MessageX.CONDITION_ARRET.toString()){
+				if(reception == null){
 					arret();
 				}
 				else{
 					messagesLus.add(reception);
 					nbMessagesTraites++;
+					if(reception.getNbExemplaire() == 0){
+						activite.release();
+					}
 				}
+				
+				
+				
+				
 				mutex.release();
-				vide.release();
+			//	vide.release();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -76,6 +79,8 @@ public class Consommateur extends Acteur implements _Consommateur {
 				e.printStackTrace();
 			}
 		}
+//		System.out.println(this.getName()+ " a plus");
+		
 	}
 
 	@Override

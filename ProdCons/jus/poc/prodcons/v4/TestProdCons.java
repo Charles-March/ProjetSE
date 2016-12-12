@@ -103,10 +103,14 @@ public class TestProdCons extends Simulateur {
 				tousMesActeurs.remove(i);
 			}
 		}
+		
 		for(i=0; i<nbCons; i++){
-			tampon.put(new Producteur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon, nombreMoyenNbExemplaire, deviationNombreMoyenNbExemplaire), MessageX.CONDITION_ARRET);
+			//tampon.put(new Producteur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon, nombreMoyenNbExemplaire, deviationNombreMoyenNbExemplaire), MessageX.CONDITION_ARRET);
+			consommateurs.get(i).activite.release();
+			//tampon.plein.release();
 			tampon.plein.release();
 			System.out.println(consommateurs.get(i).getConsommes().toString());
+			
 		}
 	}
 

@@ -18,7 +18,6 @@ public class Producteur extends Acteur implements _Producteur {
 	private Semaphore plein;
 	private Semaphore vide;
 	private Semaphore mutex;
-	private boolean tourne;
 	public Semaphore activite;
 	
 	public Producteur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement,ProdCons tp, int nbExemplaireMoyen, int deviationNbExemplaire)
@@ -29,8 +28,8 @@ public class Producteur extends Acteur implements _Producteur {
 		messages = new LinkedList<MessageX>();
 		for(int i=0;i<nbMessagesADeposer;i++){
 			messages.add(new MessageX("Ceci est le message n°"+(i+1)+" depose par le producteur "+identification()));
-			//messages.get(i).setNbExemplaire((new Aleatoire(nbExemplaireMoyen, deviationNbExemplaire)).next());
-			messages.get(i).setNbExemplaire(3);
+			messages.get(i).setNbExemplaire((new Aleatoire(nbExemplaireMoyen, deviationNbExemplaire)).next());
+			//messages.get(i).setNbExemplaire(3);
 		}
 		tampon = tp;
 		vide = tp.vide;
@@ -43,13 +42,13 @@ public class Producteur extends Acteur implements _Producteur {
 	public void run(){
 		for(int i=0; i<nbMessagesADeposer; i++){
 			try {
-				System.out.println(Thread.currentThread().getName()+" hello!" + i);
+		//		System.out.println(Thread.currentThread().getName()+" hello!" + i);
 				sleep(200);
-				System.out.println("vide");
+		//		System.out.println("vide");
 				vide.acquire();
-				System.out.println("activite");
+		//		System.out.println("activite");
 				activite.acquire();
-				System.out.println("mutex");
+	//			System.out.println("mutex");
 				mutex.acquire();
 				tampon.put(this,messages.get(i));
 				
@@ -67,6 +66,7 @@ public class Producteur extends Acteur implements _Producteur {
 				e.printStackTrace();
 			}
 		}
+//	System.out.println(this.getName()+ " a plus");
 	}
 	
 	@Override
