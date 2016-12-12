@@ -1,8 +1,4 @@
-package jus.poc.prodcons.v5;
-
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+package jus.poc.prodcons.v6;
 
 import jus.poc.prodcons.Message;
 import jus.poc.prodcons.Tampon;
@@ -15,11 +11,8 @@ public class ProdCons implements Tampon {
 	private int caseDepot;
 	private int caseConso;
 	public MessageX[] buffer;
-	//public monSemaphore plein, vide;
-	//public monSemaphore mutexIn, mutexOut;
-	private Lock lock = new ReentrantLock();
-	private Condition vide = lock.newCondition();
-	public Condition plein = lock.newCondition();
+	public monSemaphore plein, vide;
+	public monSemaphore mutexIn, mutexOut;
 	
 	public ProdCons(int taille) {
 		// TODO Auto-generated constructor stub		
@@ -27,10 +20,10 @@ public class ProdCons implements Tampon {
 		buffer = new MessageX[taille];
 		caseDepot = 0;
 		caseConso = 0;
-		//plein = new monSemaphore(0);
-		//vide = new monSemaphore(taille);
-		//mutexIn = new monSemaphore(1);
-		//mutexOut = new monSemaphore(1);
+		plein = new monSemaphore(0);
+		vide = new monSemaphore(taille);
+		mutexIn = new monSemaphore(1);
+		mutexOut = new monSemaphore(1);
 	}
 
 	@Override
@@ -44,28 +37,18 @@ public class ProdCons implements Tampon {
 	@Override
 	public Message get(_Consommateur arg0) throws Exception, InterruptedException {
 		// TODO Auto-generated method stub
-		lock.lock();
-		try{
-			while(enAttente() == 0) plein.await();
-			Message sortie;
-			sortie = buffer[caseConso];
-			buffer[caseConso] = null;
-			caseConso = (++caseConso)%nbBuffer;
-			vide.signal();
-			return sortie;
-		}finally{lock.unlock();}
+		Message sortie;
+		sortie = buffer[caseConso];
+		buffer[caseConso] = null;
+		caseConso = (++caseConso)%nbBuffer;
+		return sortie;
 	}
 
 	@Override
 	public void put(_Producteur arg0, Message arg1) throws Exception, InterruptedException {
 		// TODO Auto-generated method stub
-		lock.lock();
-		try{
-			while(enAttente() == nbBuffer) vide.await();
-			buffer[caseDepot] = (MessageX) arg1;
-			caseDepot = (++caseDepot)%nbBuffer;
-			plein.signal();
-		}finally{lock.unlock();}
+		buffer[caseDepot] = (MessageX) arg1;
+		caseDepot = (++caseDepot)%nbBuffer;
 	}
 
 	@Override

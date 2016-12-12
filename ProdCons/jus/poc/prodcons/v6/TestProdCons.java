@@ -1,4 +1,4 @@
-package jus.poc.prodcons.v5;
+package jus.poc.prodcons.v6;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -105,7 +105,7 @@ public class TestProdCons extends Simulateur {
 			}
 		}
 		for(i=0; i<nbCons; i++){
-			tampon.plein.signal();
+			tampon.plein.V();
 			System.out.println(consommateurs.get(i).getConsommes().toString());
 		}
 	}

@@ -1,4 +1,4 @@
-package jus.poc.prodcons.v5;
+package jus.poc.prodcons.v6;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -35,11 +35,11 @@ public class Consommateur extends Acteur implements _Consommateur {
 		while(etat){
 			try {
 				sleep(200);
-				//tampon.plein.P();
-				//tampon.mutexOut.P();
+				tampon.plein.P();
+				tampon.mutexOut.P();
 				reception = (MessageX)tampon.get(this);
-				//tampon.mutexOut.V();
-				//tampon.vide.V();
+				tampon.mutexOut.V();
+				tampon.vide.V();
 				if(reception == null){
 					arret();
 				}
