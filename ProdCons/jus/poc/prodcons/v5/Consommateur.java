@@ -37,17 +37,21 @@ public class Consommateur extends Acteur implements _Consommateur {
 				sleep(200);
 				//tampon.plein.P();
 				//tampon.mutexOut.P();
-				reception = (MessageX)tampon.get(this);
-				//tampon.mutexOut.V();
-				//tampon.vide.V();
-				if(reception == null){
-					arret();
-				}
-				else{
-					observateur.retraitMessage(this, reception);
-					messagesLus.add(reception);
-					observateur.consommationMessage(this, messagesLus.get(messagesLus.size()-1), moyenneTempsDeTraitement);
-					nbMessagesTraites++;
+				try{
+					reception = (MessageX)tampon.get(this);
+					//tampon.mutexOut.V();
+					//tampon.vide.V();
+					if(reception == null){
+						arret();
+					}
+					else{
+						observateur.retraitMessage(this, reception);
+						messagesLus.add(reception);
+						observateur.consommationMessage(this, messagesLus.get(messagesLus.size()-1), moyenneTempsDeTraitement);
+						nbMessagesTraites++;
+					}
+				}catch (ControlException e){
+					e.printStackTrace();
 				}
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
