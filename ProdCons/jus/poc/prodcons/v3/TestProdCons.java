@@ -108,7 +108,7 @@ public class TestProdCons extends Simulateur {
 			}
 		}
 		for(i=0; i<nbCons; i++){
-			tampon.plein.release();
+			tampon.plein.V();
 			System.out.println(consommateurs.get(i).getConsommes().toString());
 		}
 	}
