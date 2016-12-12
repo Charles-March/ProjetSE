@@ -7,10 +7,6 @@ import java.util.Random;
 import jus.poc.prodcons.Acteur;
 import jus.poc.prodcons.Observateur;
 import jus.poc.prodcons.Simulateur;
-import jus.poc.prodcons.v4.MessageX;
-import jus.poc.prodcons.v4.Consommateur;
-import jus.poc.prodcons.v4.ProdCons;
-import jus.poc.prodcons.v4.Producteur;
 
 public class TestProdCons extends Simulateur {
 	
@@ -99,16 +95,13 @@ public class TestProdCons extends Simulateur {
 				else if(monActeur instanceof Consommateur){
 					monActeur.start();
 				}
-				System.out.println("entree de "+tousMesActeurs.get(i));
 				tousMesActeurs.remove(i);
 			}
 		}
 		
 		for(i=0; i<nbCons; i++){
-			//tampon.put(new Producteur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon, nombreMoyenNbExemplaire, deviationNombreMoyenNbExemplaire), MessageX.CONDITION_ARRET);
-			consommateurs.get(i).activite.release();
-			//tampon.plein.release();
-			tampon.plein.release();
+			consommateurs.get(i).activite.V();
+			tampon.plein.V();
 			System.out.println(consommateurs.get(i).getConsommes().toString());
 			
 		}

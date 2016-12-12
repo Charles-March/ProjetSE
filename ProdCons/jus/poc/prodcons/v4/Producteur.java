@@ -2,7 +2,6 @@ package jus.poc.prodcons.v4;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.Semaphore;
 
 import jus.poc.prodcons.Acteur;
 import jus.poc.prodcons.Aleatoire;
@@ -15,10 +14,7 @@ public class Producteur extends Acteur implements _Producteur {
 	private int nbMessagesADeposer;
 	private List<MessageX> messages;
 	private ProdCons tampon;
-	private Semaphore plein;
-	private Semaphore vide;
-	private Semaphore mutex;
-	public Semaphore activite;
+	public monSemaphore activite;
 	
 	public Producteur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement,ProdCons tp, int nbExemplaireMoyen, int deviationNbExemplaire)
 			throws ControlException {
@@ -32,32 +28,23 @@ public class Producteur extends Acteur implements _Producteur {
 			//messages.get(i).setNbExemplaire(3);
 		}
 		tampon = tp;
-		vide = tp.vide;
-		plein = tp.plein;
-		mutex = tp.mutexDepot;
-		activite = new Semaphore(1);
+		activite = new monSemaphore(1);
 	}
 	
 	@Override
 	public void run(){
 		for(int i=0; i<nbMessagesADeposer; i++){
 			try {
-		//		System.out.println(Thread.currentThread().getName()+" hello!" + i);
 				sleep(200);
-		//		System.out.println("vide");
-				vide.acquire();
-		//		System.out.println("activite");
-				activite.acquire();
-	//			System.out.println("mutex");
-				mutex.acquire();
+				tampon.vide.P();
+				activite.P();
+				tampon.mutex.P();
 				tampon.put(this,messages.get(i));
-				
-				mutex.release();
-				
+				tampon.mutex.V();
 				if(messages.get(i).getNbExemplaire() == 0){
-					activite.release();
+					activite.V();
 				}
-				tampon.plein.release();
+				tampon.plein.V();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -66,7 +53,6 @@ public class Producteur extends Acteur implements _Producteur {
 				e.printStackTrace();
 			}
 		}
-//	System.out.println(this.getName()+ " a plus");
 	}
 	
 	@Override

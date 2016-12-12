@@ -2,7 +2,6 @@ package jus.poc.prodcons.v4;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.Semaphore;
 
 import jus.poc.prodcons.Acteur;
 import jus.poc.prodcons.ControlException;
@@ -16,10 +15,7 @@ public class Consommateur extends Acteur implements _Consommateur {
 	private ProdCons tampon;
 	private List<MessageX> messagesLus;
 	private boolean etat = false;
-	private Semaphore plein;
-	private Semaphore vide;
-	private Semaphore mutex;
-	public Semaphore activite;
+	public monSemaphore activite;
 	
 	public Consommateur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement, ProdCons tp)
 			throws ControlException {
@@ -28,10 +24,7 @@ public class Consommateur extends Acteur implements _Consommateur {
 		tampon = tp;
 		nbMessagesTraites = 0;
 		messagesLus = new LinkedList<MessageX>();
-		vide = tp.vide;
-		plein = tp.plein;
-		mutex = tp.mutexConso;
-		activite = new Semaphore(1);
+		activite = new monSemaphore(1);
 	}
 	
 	public List<MessageX> getConsommes(){return messagesLus;}
@@ -45,16 +38,10 @@ public class Consommateur extends Acteur implements _Consommateur {
 		while(etat){
 			try {
 				sleep(200);
-		//		System.out.println(this.getName() + " Etat : 1");
-				plein.acquire();
-		//		System.out.println(this.getName() +" Etat : 2");
-				activite.acquire();
-		//		System.out.println(this.getName() +" Etat  : 3");
-				mutex.acquire();
-		//		System.out.println(this.getName() +" Etat : 4");
+				tampon.plein.P();
+				activite.P();
+				tampon.mutex.P();
 				reception = (MessageX)tampon.get(this);
-		//		System.out.println(Thread.currentThread().getName()+" lecture du message "+reception);
-				
 				if(reception == null){
 					arret();
 				}
@@ -62,15 +49,10 @@ public class Consommateur extends Acteur implements _Consommateur {
 					messagesLus.add(reception);
 					nbMessagesTraites++;
 					if(reception.getNbExemplaire() == 0){
-						activite.release();
+						activite.V();
 					}
 				}
-				
-				
-				
-				
-				mutex.release();
-			//	vide.release();
+				tampon.mutex.V();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -78,9 +60,7 @@ public class Consommateur extends Acteur implements _Consommateur {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}
-//		System.out.println(this.getName()+ " a plus");
-		
+		}		
 	}
 
 	@Override
