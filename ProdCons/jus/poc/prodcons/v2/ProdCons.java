@@ -1,7 +1,5 @@
 package jus.poc.prodcons.v2;
 
-import java.util.concurrent.Semaphore;
-
 import jus.poc.prodcons.Message;
 import jus.poc.prodcons.Tampon;
 import jus.poc.prodcons._Consommateur;
@@ -13,10 +11,8 @@ public class ProdCons implements Tampon {
 	private int caseDepot;
 	private int caseConso;
 	public MessageX[] buffer;
-	public Semaphore plein;
-	public Semaphore mutexDepot = new Semaphore(1);
-	public Semaphore mutexConso = new Semaphore(1);
-	public Semaphore vide;
+	public monSemaphore plein, vide;
+	public monSemaphore mutex = new monSemaphore(1);
 	
 	public ProdCons(int taille) {
 		// TODO Auto-generated constructor stub		
@@ -24,8 +20,8 @@ public class ProdCons implements Tampon {
 		buffer = new MessageX[taille];
 		caseDepot = 0;
 		caseConso = 0;
-		plein = new Semaphore(0);
-		vide = new Semaphore(taille);
+		plein = new monSemaphore(0);
+		vide = new monSemaphore(taille);
 	}
 
 	@Override
