@@ -76,6 +76,7 @@ public class TestProdCons extends Simulateur {
 	protected void run() throws Exception {
 		// TODO Auto-generated method stub
 		init("options.xml");
+		System.out.println("tamer");
 		obs.init(nbProd,nbCons,nbBuffer);
 		monObservateur.init(nbProd, nbCons, nbBuffer);
 		tampon = new ProdCons(nbBuffer);

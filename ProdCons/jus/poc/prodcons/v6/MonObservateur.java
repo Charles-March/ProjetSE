@@ -3,16 +3,18 @@ package jus.poc.prodcons.v6;
 import jus.poc.prodcons.Message;
 import jus.poc.prodcons._Consommateur;
 import jus.poc.prodcons._Producteur;
+
+
 import jus.poc.prodcons.ControlException;
 @SuppressWarnings("unused")
 public class MonObservateur {
-	private static final Exception initEx = new ControlException(null,"init");
-	private static final Exception consommationMsgEx = new ControlException(null,"consommationMessage");
-	private static final Exception depotMsgEx = new ControlException(null,"depotMessage");
-	private static final Exception newConsEx = new ControlException(null,"newConsommateur");
-	private static final Exception newProdEx = new ControlException(null,"newProducteur");
-	private static final Exception productionMsgEx = new ControlException(null,"productionMessage");
-	private static final Exception retraitMsgEx = new ControlException(null,"retraitMessage");
+	private static final Exception initEx = new ControlException(MonObservateur.class,"init");
+	private static final Exception consommationMsgEx = new ControlException(MonObservateur.class,"consommationMessage");
+	private static final Exception depotMsgEx = new ControlException(MonObservateur.class,"depotMessage");
+	private static final Exception newConsEx = new ControlException(MonObservateur.class,"newConsommateur");
+	private static final Exception newProdEx = new ControlException(MonObservateur.class,"newProducteur");
+	private static final Exception productionMsgEx = new ControlException(MonObservateur.class,"productionMessage");
+	private static final Exception retraitMsgEx = new ControlException(MonObservateur.class,"retraitMessage");
 	
 	/*
 	 * L'ensemble des Exceptions des fonctions
@@ -58,7 +60,7 @@ public class MonObservateur {
 		ArgumentsValides - nbproducteurs>0 && nbconsommateurs>0 && nbBuffers>0
 	 */
 		if(!(nbProducteurs>0 && nbConsommateurs>0 && nbBuffers>0)) throw initEx;
-		
+		coherent=true;
 	}
 	
 	public void	consommationMessage(_Consommateur c, Message m, int tempsDeTraitement) throws Exception{
@@ -133,7 +135,7 @@ public class MonObservateur {
 			ArgumentsValides - p!=null
 			EtatControleurcoherent - coherent()
 		*/
-		if((p!=null && coherent())) throw newProdEx;
+		if(!(p!=null && coherent())) throw newProdEx;
 
 	}
 	
@@ -153,7 +155,7 @@ public class MonObservateur {
 			ArgumentsValides - p!=null && m!=null && tempsDeTraitement>0
 			EtatControleurcoherent - coherent()
 		 */	
-		if((p!=null && m!=null && tempsDeTraitement>0 && coherent())) throw productionMsgEx;
+		if(!(p!=null && m!=null && tempsDeTraitement>0 && coherent())) throw productionMsgEx;
 	}
 	
 	public void	retraitMessage(_Consommateur c, Message m) throws Exception{

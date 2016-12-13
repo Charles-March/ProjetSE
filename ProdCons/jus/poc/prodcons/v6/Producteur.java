@@ -8,7 +8,6 @@ import jus.poc.prodcons.Aleatoire;
 import jus.poc.prodcons.ControlException;
 import jus.poc.prodcons.Observateur;
 import jus.poc.prodcons._Producteur;
-import jus.poc.prodcons.v2.MessageX;
 
 public class Producteur extends Acteur implements _Producteur {
 
