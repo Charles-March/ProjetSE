@@ -15,8 +15,6 @@ public class ProdCons implements Tampon {
 	private int caseDepot;
 	private int caseConso;
 	public MessageX[] buffer;
-	//public monSemaphore plein, vide;
-	//public monSemaphore mutexIn, mutexOut;
 	public Lock lock = new ReentrantLock();
 	public Condition vide = lock.newCondition();
 	public Condition plein = lock.newCondition();
@@ -27,10 +25,6 @@ public class ProdCons implements Tampon {
 		buffer = new MessageX[taille];
 		caseDepot = 0;
 		caseConso = 0;
-		//plein = new monSemaphore(0);
-		//vide = new monSemaphore(taille);
-		//mutexIn = new monSemaphore(1);
-		//mutexOut = new monSemaphore(1);
 	}
 
 	@Override
@@ -47,8 +41,8 @@ public class ProdCons implements Tampon {
 		lock.lock();
 		try{
 			while(enAttente() == 0) plein.await();
-			Message sortie;
-			sortie = buffer[caseConso];
+			Message sortie = buffer[caseConso];
+			if(sortie != null)System.out.println(Thread.currentThread().getName()+" recupere "+sortie);
 			buffer[caseConso] = null;
 			caseConso = (++caseConso)%nbBuffer;
 			vide.signal();
@@ -63,6 +57,7 @@ public class ProdCons implements Tampon {
 		try{
 			while(enAttente() == nbBuffer) vide.await();
 			buffer[caseDepot] = (MessageX) arg1;
+			System.out.println(Thread.currentThread().getName()+" depose "+arg1);
 			caseDepot = (++caseDepot)%nbBuffer;
 			plein.signal();
 		}finally{lock.unlock();}

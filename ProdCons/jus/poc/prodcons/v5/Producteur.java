@@ -29,27 +29,13 @@ public class Producteur extends Acteur implements _Producteur {
 	
 	@Override
 	public void run(){
-		System.out.println("debut "+getName());
 		for(int i=0; i<nbMessagesADeposer; i++){
 			try {
 				messages.add(new MessageX("message n°"+i+"-"+identification()));
 				sleep(alea.next()*50);
 				observateur.productionMessage(this, messages.get(i), moyenneTempsDeTraitement);
-				//System.out.println("lock producteur");
-				//tampon.lock.lock();
-				//tampon.vide.P();
-				//tampon.mutexIn.P();
-				//System.out.println("producteur avant put");
-				//while(tampon.enAttente() == tampon.taille()) tampon.vide.await();
-				//System.out.println("après le while?");
 				tampon.put(this,messages.get(i));
 				observateur.depotMessage(this, messages.get(i));
-				//tampon.plein.signal();
-				//System.out.println("producteur après put");
-				//tampon.lock.unlock();
-				//System.out.println("sortie lock producteur");
-				//tampon.mutexIn.V();
-				//tampon.plein.V();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -58,7 +44,7 @@ public class Producteur extends Acteur implements _Producteur {
 				e.printStackTrace();
 			}
 		}
-		System.out.println("fin "+getName());
+		System.out.println(getName()+" fini son execution");
 	}
 	
 	@Override
