@@ -114,18 +114,20 @@ public class TestProdCons extends Simulateur {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		new TestProdCons(new Observateur()).start();
-		sc = new Scanner(System.in);
-		try {
-			Thread.sleep(40000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.out.println("Afficher la liste des messages traites par les consommateurs? o/n");
-		String reponse = sc.nextLine();
-		if(reponse.equals("o") || reponse.equals("oui")){
-			for(int i=0; i<nbCons; i++){
-				System.out.println(resultat.get(i).getName()+" contient "+resultat.get(i).getConsommes().toString());
+		if(args.length != 0){
+			sc = new Scanner(System.in);
+			try {
+				Thread.sleep(40000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println("Afficher la liste des messages traites par les consommateurs? o/n");
+			String reponse = sc.nextLine();
+			if(reponse.equals("o") || reponse.equals("oui")){
+				for(int i=0; i<nbCons; i++){
+					System.out.println(resultat.get(i).getName()+" contient "+resultat.get(i).getConsommes().toString());
+				}
 			}
 		}
 	}
