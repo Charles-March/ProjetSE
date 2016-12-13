@@ -17,8 +17,8 @@ public class ProdCons implements Tampon {
 	public MessageX[] buffer;
 	//public monSemaphore plein, vide;
 	//public monSemaphore mutexIn, mutexOut;
-	private Lock lock = new ReentrantLock();
-	private Condition vide = lock.newCondition();
+	public Lock lock = new ReentrantLock();
+	public Condition vide = lock.newCondition();
 	public Condition plein = lock.newCondition();
 	
 	public ProdCons(int taille) {
