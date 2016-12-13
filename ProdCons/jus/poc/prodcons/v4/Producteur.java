@@ -15,18 +15,18 @@ public class Producteur extends Acteur implements _Producteur {
 	private List<MessageX> messages;
 	private ProdCons tampon;
 	public MonSemaphore activite;
-	private int tempsDeTraitement;
 	private int nbLecture, deviationExemplaire;
+	private Aleatoire alea;
 	
 	public Producteur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement,ProdCons tp, int nbExemplaireMoyen, int deviationNbExemplaire)
 			throws ControlException {
 		super(typeProducteur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
 		// TODO Auto-generated constructor stub
-		nbMessagesADeposer = (new Aleatoire(moyenneTempsDeTraitement, deviationTempsDeTraitement)).next();
 		messages = new LinkedList<MessageX>();
 		tampon = tp;
 		activite = new MonSemaphore(1);
-		tempsDeTraitement = Aleatoire.valeur(moyenneTempsDeTraitement, deviationTempsDeTraitement);
+		nbMessagesADeposer = Aleatoire.valeur(moyenneTempsDeTraitement, deviationTempsDeTraitement);
+		alea = new Aleatoire(moyenneTempsDeTraitement, deviationTempsDeTraitement);
 		nbLecture = nbExemplaireMoyen;
 		deviationExemplaire = deviationNbExemplaire;
 	}
@@ -37,7 +37,7 @@ public class Producteur extends Acteur implements _Producteur {
 			try {
 				messages.add(new MessageX("message n°"+i+"-"+identification()));
 				messages.get(i).setNbExemplaire(Aleatoire.valeur(nbLecture, deviationExemplaire));
-				sleep(tempsDeTraitement*50);
+				sleep(alea.next()*50);
 				tampon.vide.P();
 				activite.P();
 				tampon.mutexIn.P();

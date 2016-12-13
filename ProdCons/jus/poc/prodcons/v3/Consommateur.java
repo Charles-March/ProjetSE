@@ -15,7 +15,7 @@ public class Consommateur extends Acteur implements _Consommateur {
 	private ProdCons tampon;
 	private List<MessageX> messagesLus;
 	private boolean etat = false;
-	private int tempsDeTraitement;
+	private Aleatoire alea;
 	
 	public Consommateur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement, ProdCons tp)
 			throws ControlException {
@@ -24,7 +24,7 @@ public class Consommateur extends Acteur implements _Consommateur {
 		tampon = tp;
 		nbMessagesTraites = 0;
 		messagesLus = new LinkedList<MessageX>();
-		tempsDeTraitement = Aleatoire.valeur(moyenneTempsDeTraitement, deviationTempsDeTraitement);
+		alea = new Aleatoire(moyenneTempsDeTraitement, deviationTempsDeTraitement);
 	}
 	
 	public List<MessageX> getConsommes(){return messagesLus;}
@@ -40,18 +40,19 @@ public class Consommateur extends Acteur implements _Consommateur {
 				tampon.plein.P();
 				tampon.mutexOut.P();
 				reception = (MessageX)tampon.get(this);
-				tampon.mutexOut.V();
-				tampon.vide.V();
 				if(reception == null){
 					arret();
 				}
 				else{
-					sleep(tempsDeTraitement*50);
+					observateur.retraitMessage(this, reception);
+					sleep(alea.next()*50);
 					messagesLus.add(reception);
-					observateur.consommationMessage(this, messagesLus.get(messagesLus.size()-1), moyenneTempsDeTraitement);
+					observateur.consommationMessage(this, reception, moyenneTempsDeTraitement);
 					System.out.println(reception+" traite");
 					nbMessagesTraites++;
 				}
+				tampon.mutexOut.V();
+				tampon.vide.V();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
