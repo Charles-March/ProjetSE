@@ -25,13 +25,15 @@ public class TestProdCons extends Simulateur {
 	protected List<Producteur> producteurs = new LinkedList<Producteur>();
 	protected List<Consommateur> consommateurs = new LinkedList<Consommateur>();
 	protected Observateur obs;
+	protected MonObservateur monObservateur;
 	protected ProdCons tampon;
 	protected List<Acteur> tousMesActeurs = new LinkedList<Acteur>();
 
-	public TestProdCons(Observateur observateur) {
+	public TestProdCons(Observateur observateur, MonObservateur observateur2) {
 		super(observateur);
 		// TODO Auto-generated constructor stub
 		obs = observateur;
+		monObservateur = observateur2;
 	}
 
 	 protected static void init(String file){
@@ -75,18 +77,21 @@ public class TestProdCons extends Simulateur {
 		// TODO Auto-generated method stub
 		init("options.xml");
 		obs.init(nbProd,nbCons,nbBuffer);
+		monObservateur.init(nbProd, nbCons, nbBuffer);
 		tampon = new ProdCons(nbBuffer);
 		int i;
 		int nbTotalDeMessagesADeposer = 0;
 		Random rand = new Random();
 		for(i=0; i<nbProd; i++){
-			producteurs.add(new Producteur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon));
+			producteurs.add(new Producteur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon, monObservateur));
 			obs.newProducteur(producteurs.get(i));
+			monObservateur.newProducteur(producteurs.get(i));
 			nbTotalDeMessagesADeposer += producteurs.get(i).nombreDeMessages();
 		}
 		for(i=0; i<nbCons; i++){
-			consommateurs.add(new Consommateur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon));
+			consommateurs.add(new Consommateur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon, monObservateur));
 			obs.newConsommateur(consommateurs.get(i));
+			monObservateur.newConsommateur(consommateurs.get(i));
 		}
 		for(i=0; i<nbProd; i++)tousMesActeurs.add(producteurs.get(i));
 		for(i=0; i<nbCons; i++)tousMesActeurs.add(consommateurs.get(i));
@@ -112,7 +117,7 @@ public class TestProdCons extends Simulateur {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		new TestProdCons(new Observateur()).start();
+		new TestProdCons(new Observateur(), new MonObservateur()).start();
 	}
 
 }

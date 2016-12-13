@@ -16,8 +16,9 @@ public class Producteur extends Acteur implements _Producteur {
 	private List<MessageX> messages;
 	private ProdCons tampon;
 	private Aleatoire alea;
+	private MonObservateur obs;
 	
-	public Producteur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement,ProdCons tp)
+	public Producteur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement,ProdCons tp, MonObservateur observateur2)
 			throws ControlException {
 		super(typeProducteur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
 		// TODO Auto-generated constructor stub
@@ -25,6 +26,7 @@ public class Producteur extends Acteur implements _Producteur {
 		tampon = tp;
 		nbMessagesADeposer = Aleatoire.valeur(moyenneTempsDeTraitement, deviationTempsDeTraitement);
 		alea = new Aleatoire(moyenneTempsDeTraitement, deviationTempsDeTraitement);
+		obs = observateur2;
 	}
 	
 	@Override
@@ -33,11 +35,13 @@ public class Producteur extends Acteur implements _Producteur {
 			try {
 				messages.add(new MessageX("message n°"+i+"-"+identification()));
 				observateur.productionMessage(this, messages.get(i), moyenneTempsDeTraitement);
+				obs.productionMessage(this, messages.get(i), moyenneTempsDeTraitement);
 				sleep(alea.next()*50);
 				tampon.vide.P();
 				tampon.mutexIn.P();
 				tampon.put(this,messages.get(i));
 				observateur.depotMessage(this, messages.get(i));
+				obs.depotMessage(this, messages.get(i));
 				tampon.mutexIn.V();
 				tampon.plein.V();
 			} catch (InterruptedException e) {

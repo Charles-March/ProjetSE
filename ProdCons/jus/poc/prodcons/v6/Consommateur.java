@@ -16,8 +16,9 @@ public class Consommateur extends Acteur implements _Consommateur {
 	private List<MessageX> messagesLus;
 	private boolean etat = false;
 	private Aleatoire alea;
+	private MonObservateur obs;
 	
-	public Consommateur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement, ProdCons tp)
+	public Consommateur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement, ProdCons tp, MonObservateur observateur2)
 			throws ControlException {
 		super(typeConsommateur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
 		// TODO Auto-generated constructor stub
@@ -25,6 +26,7 @@ public class Consommateur extends Acteur implements _Consommateur {
 		nbMessagesTraites = 0;
 		messagesLus = new LinkedList<MessageX>();
 		alea = new Aleatoire(moyenneTempsDeTraitement, deviationTempsDeTraitement);
+		obs = observateur2;
 	}
 	
 	public List<MessageX> getConsommes(){return messagesLus;}
@@ -46,8 +48,10 @@ public class Consommateur extends Acteur implements _Consommateur {
 				else{
 					sleep(alea.next()*50);
 					observateur.retraitMessage(this, reception);
+					obs.retraitMessage(this, reception);
 					messagesLus.add(reception);
-					observateur.consommationMessage(this, messagesLus.get(messagesLus.size()-1), moyenneTempsDeTraitement);
+					observateur.consommationMessage(this, reception, moyenneTempsDeTraitement);
+					obs.consommationMessage(this, reception, moyenneTempsDeTraitement);
 					nbMessagesTraites++;
 				}
 				tampon.mutexOut.V();
