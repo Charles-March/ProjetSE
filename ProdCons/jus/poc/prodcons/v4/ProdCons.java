@@ -15,9 +15,9 @@ public class ProdCons implements Tampon {
 	private int caseDepot;
 	private int caseConso;
 	private MessageX[] buffer;
-	public monSemaphore plein;
-	public monSemaphore mutexIn, mutexOut;
-	public monSemaphore vide;
+	public MonSemaphore plein;
+	public MonSemaphore mutexIn, mutexOut;
+	public MonSemaphore vide;
 	private List<_Acteur> listeDAttente;
 	
 	public ProdCons(int taille) {
@@ -26,11 +26,11 @@ public class ProdCons implements Tampon {
 		buffer = new MessageX[taille];
 		caseDepot = 0;
 		caseConso = 0;
-		plein = new monSemaphore(0);
-		vide = new monSemaphore(taille);
+		plein = new MonSemaphore(0);
+		vide = new MonSemaphore(taille);
 		listeDAttente = new LinkedList<_Acteur>();
-		mutexIn = new monSemaphore(1);
-		mutexOut = new monSemaphore(1);
+		mutexIn = new MonSemaphore(1);
+		mutexOut = new MonSemaphore(1);
 	}
 
 	@Override

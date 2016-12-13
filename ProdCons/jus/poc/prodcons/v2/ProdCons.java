@@ -11,8 +11,8 @@ public class ProdCons implements Tampon {
 	private int caseDepot;
 	private int caseConso;
 	public MessageX[] buffer;
-	public monSemaphore plein, vide;
-	public monSemaphore mutexIn, mutexOut;
+	public MonSemaphore plein, vide;
+	public MonSemaphore mutexIn, mutexOut;
 	
 	public ProdCons(int taille) {
 		// TODO Auto-generated constructor stub		
@@ -20,10 +20,10 @@ public class ProdCons implements Tampon {
 		buffer = new MessageX[taille];
 		caseDepot = 0;
 		caseConso = 0;
-		plein = new monSemaphore(0);
-		vide = new monSemaphore(taille);
-		mutexIn = new monSemaphore(1);
-		mutexOut = new monSemaphore(1);
+		plein = new MonSemaphore(0);
+		vide = new MonSemaphore(taille);
+		mutexIn = new MonSemaphore(1);
+		mutexOut = new MonSemaphore(1);
 	}
 
 	@Override

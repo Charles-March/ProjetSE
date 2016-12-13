@@ -14,7 +14,7 @@ public class Producteur extends Acteur implements _Producteur {
 	private int nbMessagesADeposer;
 	private List<MessageX> messages;
 	private ProdCons tampon;
-	public monSemaphore activite;
+	public MonSemaphore activite;
 	private int tempsDeTraitement;
 	private int nbLecture, deviationExemplaire;
 	
@@ -25,7 +25,7 @@ public class Producteur extends Acteur implements _Producteur {
 		nbMessagesADeposer = (new Aleatoire(moyenneTempsDeTraitement, deviationTempsDeTraitement)).next();
 		messages = new LinkedList<MessageX>();
 		tampon = tp;
-		activite = new monSemaphore(1);
+		activite = new MonSemaphore(1);
 		tempsDeTraitement = Aleatoire.valeur(moyenneTempsDeTraitement, deviationTempsDeTraitement);
 		nbLecture = nbExemplaireMoyen;
 		deviationExemplaire = deviationNbExemplaire;

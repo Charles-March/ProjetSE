@@ -1,11 +1,11 @@
-package jus.poc.prodcons.v3;
+package jus.poc.prodcons.v6;
 
-public class monSemaphore {
+public class MonSemaphore {
 
 	public int place;
 	public int attente;
 	
-	public monSemaphore(int val) {
+	public MonSemaphore(int val) {
 		// TODO Auto-generated constructor stub
 		place = val;
 		attente = 0;

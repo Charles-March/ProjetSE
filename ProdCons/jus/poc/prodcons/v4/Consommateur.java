@@ -15,7 +15,7 @@ public class Consommateur extends Acteur implements _Consommateur {
 	private ProdCons tampon;
 	private List<MessageX> messagesLus;
 	private boolean etat = false;
-	public monSemaphore activite;
+	public MonSemaphore activite;
 	private int tempsDeTraitement;
 	
 	public Consommateur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement, ProdCons tp)
@@ -25,7 +25,7 @@ public class Consommateur extends Acteur implements _Consommateur {
 		tampon = tp;
 		nbMessagesTraites = 0;
 		messagesLus = new LinkedList<MessageX>();
-		activite = new monSemaphore(1);
+		activite = new MonSemaphore(1);
 		tempsDeTraitement = Aleatoire.valeur(moyenneTempsDeTraitement, deviationTempsDeTraitement);
 	}
 	

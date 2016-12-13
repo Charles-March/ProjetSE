@@ -5,7 +5,6 @@ import jus.poc.prodcons.Message;
 public class MessageX implements Message {
 	
 	private String mon_message;
-	public static final MessageX CONDITION_ARRET = new MessageX("STOP !");
 	private int nombreDeRepetition;
 	
 	public MessageX(String contenu) {
