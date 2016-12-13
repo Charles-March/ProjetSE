@@ -13,6 +13,11 @@ public class MonObservateur {
 	private static final Exception newProdEx = new ControlException(null,"newProducteur");
 	private static final Exception productionMsgEx = new ControlException(null,"productionMessage");
 	private static final Exception retraitMsgEx = new ControlException(null,"retraitMessage");
+	
+	/*
+	 * L'ensemble des Exceptions des fonctions
+	 */
+	
 	private boolean coherent;
 	/* Indicateur du mode de fonctionnement 
 	 * true : le controleur est en fonction 
@@ -24,6 +29,9 @@ public class MonObservateur {
 	//private Controleur controleur;
 	private boolean operationnel;
 	
+	public MonObservateur(){
+		
+	}
 	
 	private boolean coherent(){
 		 /*
