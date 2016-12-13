@@ -2,13 +2,12 @@ package jus.poc.prodcons.v4;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.Semaphore;
 
 import jus.poc.prodcons.Acteur;
+import jus.poc.prodcons.Aleatoire;
 import jus.poc.prodcons.ControlException;
 import jus.poc.prodcons.Observateur;
 import jus.poc.prodcons._Consommateur;
-import jus.poc.prodcons.v4.MessageX;
 
 public class Consommateur extends Acteur implements _Consommateur {
 
@@ -16,10 +15,8 @@ public class Consommateur extends Acteur implements _Consommateur {
 	private ProdCons tampon;
 	private List<MessageX> messagesLus;
 	private boolean etat = false;
-	private Semaphore plein;
-	private Semaphore vide;
-	private Semaphore mutex;
-	public Semaphore activite;
+	public monSemaphore activite;
+	private int tempsDeTraitement;
 	
 	public Consommateur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement, ProdCons tp)
 			throws ControlException {
@@ -28,10 +25,8 @@ public class Consommateur extends Acteur implements _Consommateur {
 		tampon = tp;
 		nbMessagesTraites = 0;
 		messagesLus = new LinkedList<MessageX>();
-		vide = tp.vide;
-		plein = tp.plein;
-		mutex = tp.mutexConso;
-		activite = new Semaphore(1);
+		activite = new monSemaphore(1);
+		tempsDeTraitement = Aleatoire.valeur(moyenneTempsDeTraitement, deviationTempsDeTraitement);
 	}
 	
 	public List<MessageX> getConsommes(){return messagesLus;}
@@ -44,34 +39,23 @@ public class Consommateur extends Acteur implements _Consommateur {
 		MessageX reception;
 		while(etat){
 			try {
-				sleep(200);
-				System.out.println(this.getName() + " Etat : 1");
-				plein.acquire();
-				System.out.println(this.getName() +" Etat : 2");
-				activite.acquire();
-				System.out.println(this.getName() +" Etat  : 3");
-				mutex.acquire();
-				System.out.println(this.getName() +" Etat : 4");
-				reception = (MessageX)tampon.get(this);
-				System.out.println(Thread.currentThread().getName()+" lecture du message "+reception);
-				
+				tampon.plein.P();
+				activite.P();
+				tampon.mutexOut.P();
+				reception = (MessageX)tampon.get(this);				
 				if(reception == null){
-					System.out.println(this.getName()+ " Déco !");
 					arret();
 				}
 				else{
+					sleep(tempsDeTraitement*50);
 					messagesLus.add(reception);
+					System.out.println(reception+" traite");
 					nbMessagesTraites++;
 					if(reception.getNbExemplaire() == 0){
-						activite.release();
+						activite.V();
 					}
 				}
-				
-				
-				
-				
-				mutex.release();
-			//	vide.release();
+				tampon.mutexOut.V();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -80,8 +64,7 @@ public class Consommateur extends Acteur implements _Consommateur {
 				e.printStackTrace();
 			}
 		}
-//		System.out.println(this.getName()+ " a plus");
-		
+		System.out.println(getName()+" fini son execution");	
 	}
 
 	@Override

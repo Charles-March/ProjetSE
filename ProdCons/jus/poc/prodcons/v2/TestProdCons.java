@@ -3,6 +3,7 @@ package jus.poc.prodcons.v2;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 
 import jus.poc.prodcons.Acteur;
 import jus.poc.prodcons.Observateur;
@@ -21,6 +22,9 @@ public class TestProdCons extends Simulateur {
 	protected static int deviationNombreMoyenDeProduction;
 	protected static int nombreMoyenNbExemplaire;
 	protected static int deviationNombreMoyenNbExemplaire;
+	
+	protected static List<Consommateur> resultat = new LinkedList<Consommateur>();
+	private static Scanner sc;
 	
 	protected List<Producteur> producteurs = new LinkedList<Producteur>();
 	protected List<Consommateur> consommateurs = new LinkedList<Consommateur>();
@@ -102,13 +106,28 @@ public class TestProdCons extends Simulateur {
 		for(i=0; i<nbCons; i++){
 			//tampon.plein.release();
 			tampon.plein.V();
-			System.out.println(consommateurs.get(i).getConsommes().toString());
+			//System.out.println(consommateurs.get(i).getConsommes().toString());
+			resultat.add(consommateurs.get(i));
 		}
 	}
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		new TestProdCons(new Observateur()).start();
+		sc = new Scanner(System.in);
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("Afficher la liste des messages traites par les consommateurs? o/n");
+		String reponse = sc.nextLine();
+		if(reponse.equals("o") || reponse.equals("oui")){
+			for(int i=0; i<nbCons; i++){
+				System.out.println(resultat.get(i).getName()+" contient "+resultat.get(i).getConsommes().toString());
+			}
+		}
 	}
 
 }

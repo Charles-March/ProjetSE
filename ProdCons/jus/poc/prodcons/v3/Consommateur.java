@@ -4,10 +4,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import jus.poc.prodcons.Acteur;
+import jus.poc.prodcons.Aleatoire;
 import jus.poc.prodcons.ControlException;
 import jus.poc.prodcons.Observateur;
 import jus.poc.prodcons._Consommateur;
-import jus.poc.prodcons.v3.MessageX;
 
 public class Consommateur extends Acteur implements _Consommateur {
 
@@ -15,6 +15,7 @@ public class Consommateur extends Acteur implements _Consommateur {
 	private ProdCons tampon;
 	private List<MessageX> messagesLus;
 	private boolean etat = false;
+	private int tempsDeTraitement;
 	
 	public Consommateur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement, ProdCons tp)
 			throws ControlException {
@@ -23,6 +24,7 @@ public class Consommateur extends Acteur implements _Consommateur {
 		tampon = tp;
 		nbMessagesTraites = 0;
 		messagesLus = new LinkedList<MessageX>();
+		tempsDeTraitement = Aleatoire.valeur(moyenneTempsDeTraitement, deviationTempsDeTraitement);
 	}
 	
 	public List<MessageX> getConsommes(){return messagesLus;}
@@ -35,7 +37,6 @@ public class Consommateur extends Acteur implements _Consommateur {
 		MessageX reception;
 		while(etat){
 			try {
-				sleep(200);
 				tampon.plein.P();
 				tampon.mutexOut.P();
 				reception = (MessageX)tampon.get(this);
@@ -45,9 +46,10 @@ public class Consommateur extends Acteur implements _Consommateur {
 					arret();
 				}
 				else{
-					observateur.retraitMessage(this, reception);
+					sleep(tempsDeTraitement*50);
 					messagesLus.add(reception);
 					observateur.consommationMessage(this, messagesLus.get(messagesLus.size()-1), moyenneTempsDeTraitement);
+					System.out.println(reception+" traite");
 					nbMessagesTraites++;
 				}
 			} catch (InterruptedException e) {
@@ -58,6 +60,7 @@ public class Consommateur extends Acteur implements _Consommateur {
 				e.printStackTrace();
 			}
 		}
+		System.out.println(getName()+" fini son execution");
 	}
 
 	@Override

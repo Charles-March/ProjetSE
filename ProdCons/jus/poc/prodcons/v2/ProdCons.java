@@ -37,8 +37,8 @@ public class ProdCons implements Tampon {
 	@Override
 	public Message get(_Consommateur arg0) throws Exception, InterruptedException {
 		// TODO Auto-generated method stub
-		Message sortie;
-		sortie = buffer[caseConso];
+		Message sortie = buffer[caseConso];
+		System.out.println(Thread.currentThread().getName()+" recupere "+sortie);
 		buffer[caseConso] = null;
 		caseConso = (caseConso+1)%nbBuffer;
 		return sortie;
@@ -48,6 +48,7 @@ public class ProdCons implements Tampon {
 	public void put(_Producteur arg0, Message arg1) throws Exception, InterruptedException {
 		// TODO Auto-generated method stub
 		buffer[caseDepot] = (MessageX) arg1;
+		System.out.println(Thread.currentThread().getName()+" depose "+arg1);
 		caseDepot = (caseDepot+1)%nbBuffer;
 	}
 

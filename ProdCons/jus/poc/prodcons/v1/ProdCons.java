@@ -40,6 +40,7 @@ public class ProdCons implements Tampon {
 		}
 		//on stock le message
 		Message sortie = buffer[caseConso];
+		System.out.println(Thread.currentThread().getName()+" recupere "+sortie);
 		//on vide la case
 		buffer[caseConso] = null;
 		caseConso = (caseConso+1) % nbBuffer;
@@ -58,6 +59,7 @@ public class ProdCons implements Tampon {
 			catch (InterruptedException e){}
 		}
 		buffer[caseDepot] = (MessageX) arg1;
+		System.out.println(Thread.currentThread().getName()+" depose "+arg1);
 		caseDepot = (caseDepot+1) % nbBuffer;
 		notifyAll();
 	}

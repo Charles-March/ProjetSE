@@ -2,6 +2,7 @@ package jus.poc.prodcons.v3;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 import jus.poc.prodcons.Acteur;
 import jus.poc.prodcons.Aleatoire;
@@ -14,25 +15,26 @@ public class Producteur extends Acteur implements _Producteur {
 	private int nbMessagesADeposer;
 	private List<MessageX> messages;
 	private ProdCons tampon;
+	private int tempsDeTraitement;
 	
 	public Producteur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement,ProdCons tp)
 			throws ControlException {
 		super(typeProducteur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
 		// TODO Auto-generated constructor stub
-		nbMessagesADeposer = (new Aleatoire(moyenneTempsDeTraitement, deviationTempsDeTraitement)).next();
+		Random rand = new Random();
+		nbMessagesADeposer = rand.nextInt(8)+8;
 		messages = new LinkedList<MessageX>();
-		for(int i=0;i<nbMessagesADeposer;i++){
-			messages.add(new MessageX("Ceci est le message n°"+(i+1)+" depose par le producteur "+identification()));
-		}
 		tampon = tp;
+		tempsDeTraitement = Aleatoire.valeur(moyenneTempsDeTraitement, deviationTempsDeTraitement);
 	}
 	
 	@Override
 	public void run(){
 		for(int i=0; i<nbMessagesADeposer; i++){
 			try {
+				messages.add(new MessageX("message n°"+i+"-"+identification()));
+				sleep(tempsDeTraitement*50);
 				observateur.productionMessage(this, messages.get(i), moyenneTempsDeTraitement);
-				sleep(200);
 				tampon.vide.P();
 				tampon.mutexIn.P();
 				tampon.put(this,messages.get(i));
@@ -47,6 +49,7 @@ public class Producteur extends Acteur implements _Producteur {
 				e.printStackTrace();
 			}
 		}
+		System.out.println(getName()+" fini son execution");
 	}
 	
 	@Override

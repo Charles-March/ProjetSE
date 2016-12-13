@@ -3,14 +3,11 @@ package jus.poc.prodcons.v4;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 
 import jus.poc.prodcons.Acteur;
 import jus.poc.prodcons.Observateur;
 import jus.poc.prodcons.Simulateur;
-import jus.poc.prodcons.v4.MessageX;
-import jus.poc.prodcons.v4.Consommateur;
-import jus.poc.prodcons.v4.ProdCons;
-import jus.poc.prodcons.v4.Producteur;
 
 public class TestProdCons extends Simulateur {
 	
@@ -25,6 +22,9 @@ public class TestProdCons extends Simulateur {
 	protected static int deviationNombreMoyenDeProduction;
 	protected static int nombreMoyenNbExemplaire;
 	protected static int deviationNombreMoyenNbExemplaire;
+	
+	protected static List<Consommateur> resultat = new LinkedList<Consommateur>();
+	private static Scanner sc;
 	
 	protected List<Producteur> producteurs = new LinkedList<Producteur>();
 	protected List<Consommateur> consommateurs = new LinkedList<Consommateur>();
@@ -99,17 +99,14 @@ public class TestProdCons extends Simulateur {
 				else if(monActeur instanceof Consommateur){
 					monActeur.start();
 				}
-				System.out.println("entree de "+tousMesActeurs.get(i));
 				tousMesActeurs.remove(i);
 			}
 		}
-		System.out.println("FIN");
 		for(i=0; i<nbCons; i++){
-			//tampon.put(new Producteur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon, nombreMoyenNbExemplaire, deviationNombreMoyenNbExemplaire), MessageX.CONDITION_ARRET);
-			consommateurs.get(i).activite.release();
-			//tampon.plein.release();
-			tampon.plein.release();
-			System.out.println(consommateurs.get(i).getConsommes().toString());
+			consommateurs.get(i).activite.V();
+			tampon.plein.V();
+			//System.out.println(consommateurs.get(i).getConsommes().toString());
+			resultat.add(consommateurs.get(i));
 			
 		}
 	}
@@ -117,6 +114,20 @@ public class TestProdCons extends Simulateur {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		new TestProdCons(new Observateur()).start();
+		sc = new Scanner(System.in);
+		try {
+			Thread.sleep(40000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("Afficher la liste des messages traites par les consommateurs? o/n");
+		String reponse = sc.nextLine();
+		if(reponse.equals("o") || reponse.equals("oui")){
+			for(int i=0; i<nbCons; i++){
+				System.out.println(resultat.get(i).getName()+" contient "+resultat.get(i).getConsommes().toString());
+			}
+		}
 	}
 
 }

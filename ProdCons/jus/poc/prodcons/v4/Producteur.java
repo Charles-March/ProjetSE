@@ -2,7 +2,6 @@ package jus.poc.prodcons.v4;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.Semaphore;
 
 import jus.poc.prodcons.Acteur;
 import jus.poc.prodcons.Aleatoire;
@@ -15,10 +14,9 @@ public class Producteur extends Acteur implements _Producteur {
 	private int nbMessagesADeposer;
 	private List<MessageX> messages;
 	private ProdCons tampon;
-	private Semaphore plein;
-	private Semaphore vide;
-	private Semaphore mutex;
-	public Semaphore activite;
+	public monSemaphore activite;
+	private int tempsDeTraitement;
+	private int nbLecture, deviationExemplaire;
 	
 	public Producteur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement,ProdCons tp, int nbExemplaireMoyen, int deviationNbExemplaire)
 			throws ControlException {
@@ -26,38 +24,29 @@ public class Producteur extends Acteur implements _Producteur {
 		// TODO Auto-generated constructor stub
 		nbMessagesADeposer = (new Aleatoire(moyenneTempsDeTraitement, deviationTempsDeTraitement)).next();
 		messages = new LinkedList<MessageX>();
-		for(int i=0;i<nbMessagesADeposer;i++){
-			messages.add(new MessageX("Ceci est le message n°"+(i+1)+" depose par le producteur "+identification()));
-			messages.get(i).setNbExemplaire((new Aleatoire(nbExemplaireMoyen, deviationNbExemplaire)).next());
-			//messages.get(i).setNbExemplaire(3);
-		}
 		tampon = tp;
-		vide = tp.vide;
-		plein = tp.plein;
-		mutex = tp.mutexDepot;
-		activite = new Semaphore(1);
+		activite = new monSemaphore(1);
+		tempsDeTraitement = Aleatoire.valeur(moyenneTempsDeTraitement, deviationTempsDeTraitement);
+		nbLecture = nbExemplaireMoyen;
+		deviationExemplaire = deviationNbExemplaire;
 	}
     
 	@Override
 	public void run(){
 		for(int i=0; i<nbMessagesADeposer; i++){
 			try {
-		//		System.out.println(Thread.currentThread().getName()+" hello!" + i);
-				sleep(200);
-				System.out.println("vide");
-				vide.acquire();
-				System.out.println("activite");
-				activite.acquire();
-				System.out.println("mutex");
-				mutex.acquire();
-				tampon.put(this,messages.get(i));
-				
-				mutex.release();
-				
+				messages.add(new MessageX("message n°"+i+"-"+identification()));
+				messages.get(i).setNbExemplaire(Aleatoire.valeur(nbLecture, deviationExemplaire));
+				sleep(tempsDeTraitement*50);
+				tampon.vide.P();
+				activite.P();
+				tampon.mutexIn.P();
+				tampon.put(this,messages.get(i));				
+				tampon.mutexIn.V();				
 				if(messages.get(i).getNbExemplaire() == 0){
-					activite.release();
+					activite.V();
 				}
-				tampon.plein.release();
+				tampon.plein.V();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -66,7 +55,7 @@ public class Producteur extends Acteur implements _Producteur {
 				e.printStackTrace();
 			}
 		}
-//	System.out.println(this.getName()+ " a plus");
+		System.out.println(getName()+" fini son execution");
 	}
 	
 	@Override
