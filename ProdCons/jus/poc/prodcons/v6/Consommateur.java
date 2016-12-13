@@ -47,10 +47,10 @@ public class Consommateur extends Acteur implements _Consommateur {
 				}
 				else{
 					sleep(alea.next()*50);
-					observateur.retraitMessage(this, reception);
+					//observateur.retraitMessage(this, reception);
 					obs.retraitMessage(this, reception);
 					messagesLus.add(reception);
-					observateur.consommationMessage(this, reception, moyenneTempsDeTraitement);
+					//observateur.consommationMessage(this, reception, moyenneTempsDeTraitement);
 					obs.consommationMessage(this, reception, moyenneTempsDeTraitement);
 					nbMessagesTraites++;
 				}

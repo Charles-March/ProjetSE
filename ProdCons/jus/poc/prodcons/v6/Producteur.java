@@ -33,13 +33,13 @@ public class Producteur extends Acteur implements _Producteur {
 		for(int i=0; i<nbMessagesADeposer; i++){
 			try {
 				messages.add(new MessageX("message n°"+i+"-"+identification()));
-				observateur.productionMessage(this, messages.get(i), moyenneTempsDeTraitement);
+				//observateur.productionMessage(this, messages.get(i), moyenneTempsDeTraitement);
 				obs.productionMessage(this, messages.get(i), moyenneTempsDeTraitement);
 				sleep(alea.next()*50);
 				tampon.vide.P();
 				tampon.mutexIn.P();
 				tampon.put(this,messages.get(i));
-				observateur.depotMessage(this, messages.get(i));
+				//observateur.depotMessage(this, messages.get(i));
 				obs.depotMessage(this, messages.get(i));
 				tampon.mutexIn.V();
 				tampon.plein.V();

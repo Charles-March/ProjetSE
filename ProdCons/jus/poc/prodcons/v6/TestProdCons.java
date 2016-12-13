@@ -77,7 +77,7 @@ public class TestProdCons extends Simulateur {
 		// TODO Auto-generated method stub
 		init("options.xml");
 		System.out.println("tamer");
-		obs.init(nbProd,nbCons,nbBuffer);
+		//obs.init(nbProd,nbCons,nbBuffer);
 		monObservateur.init(nbProd, nbCons, nbBuffer);
 		tampon = new ProdCons(nbBuffer);
 		int i;
@@ -85,13 +85,13 @@ public class TestProdCons extends Simulateur {
 		Random rand = new Random();
 		for(i=0; i<nbProd; i++){
 			producteurs.add(new Producteur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon, monObservateur));
-			obs.newProducteur(producteurs.get(i));
+			//obs.newProducteur(producteurs.get(i));
 			monObservateur.newProducteur(producteurs.get(i));
 			nbTotalDeMessagesADeposer += producteurs.get(i).nombreDeMessages();
 		}
 		for(i=0; i<nbCons; i++){
 			consommateurs.add(new Consommateur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon, monObservateur));
-			obs.newConsommateur(consommateurs.get(i));
+			//obs.newConsommateur(consommateurs.get(i));
 			monObservateur.newConsommateur(consommateurs.get(i));
 		}
 		for(i=0; i<nbProd; i++)tousMesActeurs.add(producteurs.get(i));
