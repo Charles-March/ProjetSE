@@ -52,6 +52,7 @@ public class Consommateur extends Acteur implements _Consommateur {
 					messagesLus.add(reception);
 					//observateur.consommationMessage(this, reception, moyenneTempsDeTraitement);
 					obs.consommationMessage(this, reception, moyenneTempsDeTraitement);
+					System.out.println(reception+" traite");
 					nbMessagesTraites++;
 				}
 				tampon.mutexOut.V();
@@ -64,6 +65,7 @@ public class Consommateur extends Acteur implements _Consommateur {
 				e.printStackTrace();
 			}
 		}
+		System.out.println(getName()+" fini son execution");
 	}
 
 	@Override

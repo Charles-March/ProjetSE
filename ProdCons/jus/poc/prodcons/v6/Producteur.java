@@ -51,6 +51,7 @@ public class Producteur extends Acteur implements _Producteur {
 				e.printStackTrace();
 			}
 		}
+		System.out.println(getName()+" fini son execution");
 	}
 	
 	@Override
