@@ -14,6 +14,7 @@ public class Producteur extends Acteur implements _Producteur {
 	private int nbMessagesADeposer;
 	private List<MessageX> messages;
 	private ProdCons tampon;
+	private Aleatoire alea;
 	
 	public Producteur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement,ProdCons tp)
 			throws ControlException {
@@ -21,22 +22,32 @@ public class Producteur extends Acteur implements _Producteur {
 		// TODO Auto-generated constructor stub
 		nbMessagesADeposer = (new Aleatoire(moyenneTempsDeTraitement, deviationTempsDeTraitement)).next();
 		messages = new LinkedList<MessageX>();
-		for(int i=0;i<nbMessagesADeposer;i++){
-			messages.add(new MessageX("Ceci est le message n°"+(i+1)+" depose par le producteur "+identification()));
-		}
 		tampon = tp;
+		nbMessagesADeposer = Aleatoire.valeur(moyenneTempsDeTraitement, deviationTempsDeTraitement);
+		alea = new Aleatoire(moyenneTempsDeTraitement, deviationTempsDeTraitement);
 	}
 	
 	@Override
 	public void run(){
+		System.out.println("debut "+getName());
 		for(int i=0; i<nbMessagesADeposer; i++){
 			try {
+				messages.add(new MessageX("message n°"+i+"-"+identification()));
+				sleep(alea.next()*50);
 				observateur.productionMessage(this, messages.get(i), moyenneTempsDeTraitement);
-				sleep(200);
+				//System.out.println("lock producteur");
+				//tampon.lock.lock();
 				//tampon.vide.P();
 				//tampon.mutexIn.P();
+				//System.out.println("producteur avant put");
+				//while(tampon.enAttente() == tampon.taille()) tampon.vide.await();
+				//System.out.println("après le while?");
 				tampon.put(this,messages.get(i));
 				observateur.depotMessage(this, messages.get(i));
+				//tampon.plein.signal();
+				//System.out.println("producteur après put");
+				//tampon.lock.unlock();
+				//System.out.println("sortie lock producteur");
 				//tampon.mutexIn.V();
 				//tampon.plein.V();
 			} catch (InterruptedException e) {
@@ -47,6 +58,7 @@ public class Producteur extends Acteur implements _Producteur {
 				e.printStackTrace();
 			}
 		}
+		System.out.println("fin "+getName());
 	}
 	
 	@Override
