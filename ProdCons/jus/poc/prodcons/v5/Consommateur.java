@@ -15,7 +15,6 @@ public class Consommateur extends Acteur implements _Consommateur {
 	private ProdCons tampon;
 	private List<MessageX> messagesLus;
 	private boolean etat = false;
-	private int tempsDeTraitement;
 	private Aleatoire alea;
 	
 	public Consommateur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement, ProdCons tp)
@@ -36,46 +35,28 @@ public class Consommateur extends Acteur implements _Consommateur {
 	public void run(){
 		etat = true;
 		MessageX reception;
-		System.out.println("debut "+getName());
 		while(etat){
 			try {
-				//tampon.plein.P();
-				//tampon.mutexOut.P();
-				try{
-					//System.out.println("consommateur avant lock");
-					//tampon.lock.lock();
-					//System.out.println("consommateur entree get");
-					//while(tampon.enAttente() == 0) tampon.plein.await();
-					reception = (MessageX)tampon.get(this);
-					/*if(reception == null){
-						arret();
-					}
-					else{*/
-					if(reception != null){
-						observateur.retraitMessage(this, reception);
-						sleep(alea.next()*50);
-						messagesLus.add(reception);
-						observateur.consommationMessage(this, messagesLus.get(messagesLus.size()-1), tempsDeTraitement);
-						nbMessagesTraites++;
-					}
-					//tampon.vide.signal();
-					//System.out.println("consommateur sortie get");
-					//tampon.lock.unlock();
-					//System.out.println("après le lock consommateur");
-					//tampon.mutexOut.V();
-					//tampon.vide.V();
-				}catch (ControlException e){
-					e.printStackTrace();
+				reception = (MessageX)tampon.get(this);
+				if(reception != null){
+					observateur.retraitMessage(this, reception);
+					sleep(alea.next()*50);
+					messagesLus.add(reception);
+					observateur.consommationMessage(this, messagesLus.get(messagesLus.size()-1), moyenneTempsDeTraitement);
+					System.out.println(reception+" traite");
+					nbMessagesTraites++;
 				}
-			} catch (InterruptedException e) {
+			}catch (ControlException e){
+				e.printStackTrace();
+			}catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (Exception e) {
+			}catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		System.out.println("fin "+getName());
+		System.out.println(getName()+" fini son execution");	
 	}
 
 	@Override
