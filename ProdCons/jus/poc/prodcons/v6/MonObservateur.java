@@ -3,8 +3,16 @@ package jus.poc.prodcons.v6;
 import jus.poc.prodcons.Message;
 import jus.poc.prodcons._Consommateur;
 import jus.poc.prodcons._Producteur;
+import jus.poc.prodcons.ControlException;
 @SuppressWarnings("unused")
 public class MonObservateur {
+	private static final Exception initEx = new ControlException(null,"init");
+	private static final Exception consommationMsgEx = new ControlException(null,"consommationMessage");
+	private static final Exception depotMsgEx = new ControlException(null,"depotMessage");
+	private static final Exception newConsEx = new ControlException(null,"newConsommateur");
+	private static final Exception newProdEx = new ControlException(null,"newProducteur");
+	private static final Exception productionMsgEx = new ControlException(null,"productionMessage");
+	private static final Exception retraitMsgEx = new ControlException(null,"retraitMessage");
 	private boolean coherent;
 	/* Indicateur du mode de fonctionnement 
 	 * true : le controleur est en fonction 
@@ -26,7 +34,7 @@ public class MonObservateur {
 		return coherent;
 	}
 	
-	public void init(int nbProducteurs, int nbConsommateurs, int nbBuffers){
+	public void init(int nbProducteurs, int nbConsommateurs, int nbBuffers) throws Exception{
 	/*
 	 * initialisation de l'observateur
 	 
@@ -41,11 +49,11 @@ public class MonObservateur {
 	 * Requires :
 		ArgumentsValides - nbproducteurs>0 && nbconsommateurs>0 && nbBuffers>0
 	 */
+		if(!(nbProducteurs>0 && nbConsommateurs>0 && nbBuffers>0)) throw initEx;
 		
 	}
 	
-	
-	public void	consommationMessage(_Consommateur c, Message m, int tempsDeTraitement){
+	public void	consommationMessage(_Consommateur c, Message m, int tempsDeTraitement) throws Exception{
 		/*
 		 * Evenement correspondant à la consommation d'un message
 
@@ -61,9 +69,12 @@ public class MonObservateur {
 			ArgumentsValides - c!=null && m!=null && tempsDeTraitement>0
 			EtatControleurcoherent - coherent()
 		*/
+		
+		if(!(c!=null && m!=null && tempsDeTraitement>0 && coherent())) throw consommationMsgEx;
+		
 	}
 		
-	public void	depotMessage(_Producteur p, Message m){
+	public void	depotMessage(_Producteur p, Message m) throws Exception{
 		/*
 		 * Evenement correspondant au dépot d'un message dans le tampon
 		 
@@ -78,9 +89,11 @@ public class MonObservateur {
 			ArgumentsValides - p!=null && m!=null
 			EtatControleurcoherent - coherent()
 		*/
+		if(!(p!=null && m!=null && coherent())) throw depotMsgEx;
+		
 	}
 	
-	public void	newConsommateur(_Consommateur c){
+	public void	newConsommateur(_Consommateur c) throws Exception{
 		/*
 		 * Evenement correspondant à la création d'un nouveau consommateur
 		 
@@ -94,10 +107,11 @@ public class MonObservateur {
 			ArgumentsValides - c!=null
 			EtatControleurcoherent - coherent()
 		*/
+		if(!(c!=null && coherent())) throw newConsEx;
 
 	}
 	
-	public void newProducteur(_Producteur p){
+	public void newProducteur(_Producteur p) throws Exception{
 		/*
 		 * Evenement correspondant à la création d'un nouveau producteur
 		 
@@ -111,10 +125,11 @@ public class MonObservateur {
 			ArgumentsValides - p!=null
 			EtatControleurcoherent - coherent()
 		*/
+		if((p!=null && coherent())) throw newProdEx;
 
 	}
 	
-	public void productionMessage(_Producteur p, Message m, int tempsDeTraitement){
+	public void productionMessage(_Producteur p, Message m, int tempsDeTraitement) throws Exception{
 		/*
 		 * Evenement correspondant à la production d'un message
 		 
@@ -129,10 +144,11 @@ public class MonObservateur {
 		 * Requires :
 			ArgumentsValides - p!=null && m!=null && tempsDeTraitement>0
 			EtatControleurcoherent - coherent()
-		 */	 
+		 */	
+		if((p!=null && m!=null && tempsDeTraitement>0 && coherent())) throw productionMsgEx;
 	}
 	
-	public void	retraitMessage(_Consommateur c, Message m){
+	public void	retraitMessage(_Consommateur c, Message m) throws Exception{
 		/*
 		 * Evenement correspondant au retrait d'un message du tampon
 
@@ -146,5 +162,6 @@ public class MonObservateur {
 			ArgumentsValides - c!=null && m!=null
 			EtatControleurcoherent - coherent()
 		*/		
+		if(!(c!=null && m!=null && coherent()) ) throw retraitMsgEx;
 	}
 }
