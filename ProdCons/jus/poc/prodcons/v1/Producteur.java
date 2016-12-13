@@ -2,7 +2,6 @@ package jus.poc.prodcons.v1;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 import jus.poc.prodcons.Acteur;
 import jus.poc.prodcons.Aleatoire;
@@ -15,17 +14,16 @@ public class Producteur extends Acteur implements _Producteur {
 	private int nbMessagesADeposer;
 	private List<MessageX> messages;
 	private ProdCons tampon;
-	private int tempsDeTraitement;
+	private Aleatoire alea;
 	
 	public Producteur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement,ProdCons tp)
 			throws ControlException {
 		super(typeProducteur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
 		// TODO Auto-generated constructor stub
-		Random rand = new Random();
-		nbMessagesADeposer = rand.nextInt(8)+8;
 		messages = new LinkedList<MessageX>();
 		tampon = tp;
-		tempsDeTraitement = Aleatoire.valeur(moyenneTempsDeTraitement, deviationTempsDeTraitement);
+		nbMessagesADeposer = Aleatoire.valeur(moyenneTempsDeTraitement, deviationTempsDeTraitement);
+		alea = new Aleatoire(moyenneTempsDeTraitement, deviationTempsDeTraitement);
 	}
 	
 	@Override
@@ -33,7 +31,7 @@ public class Producteur extends Acteur implements _Producteur {
 		for(int i=0; i<nbMessagesADeposer; i++){
 			try {
 				messages.add(new MessageX("message n°"+i+"-"+identification()));
-				sleep(tempsDeTraitement*50);
+				sleep(alea.next()*50);
 				tampon.put(this,messages.get(i));
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block

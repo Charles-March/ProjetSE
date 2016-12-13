@@ -16,7 +16,7 @@ public class Consommateur extends Acteur implements _Consommateur {
 	private List<MessageX> messagesLus;
 	private boolean etat = false;
 	public MonSemaphore activite;
-	private int tempsDeTraitement;
+	private Aleatoire alea;
 	
 	public Consommateur(Observateur observateur, int moyenneTempsDeTraitement, int deviationTempsDeTraitement, ProdCons tp)
 			throws ControlException {
@@ -26,7 +26,7 @@ public class Consommateur extends Acteur implements _Consommateur {
 		nbMessagesTraites = 0;
 		messagesLus = new LinkedList<MessageX>();
 		activite = new MonSemaphore(1);
-		tempsDeTraitement = Aleatoire.valeur(moyenneTempsDeTraitement, deviationTempsDeTraitement);
+		alea = new Aleatoire(moyenneTempsDeTraitement, deviationTempsDeTraitement);
 	}
 	
 	public List<MessageX> getConsommes(){return messagesLus;}
@@ -42,12 +42,12 @@ public class Consommateur extends Acteur implements _Consommateur {
 				tampon.plein.P();
 				activite.P();
 				tampon.mutexOut.P();
-				reception = (MessageX)tampon.get(this);				
+				reception = (MessageX)tampon.get(this);		
 				if(reception == null){
 					arret();
 				}
 				else{
-					sleep(tempsDeTraitement*50);
+					sleep(alea.next()*50);
 					messagesLus.add(reception);
 					System.out.println(reception+" traite");
 					nbMessagesTraites++;
